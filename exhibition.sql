@@ -34,7 +34,9 @@ CREATE TABLE `gallery` (
   `name` varchar(128) NOT NULL,
   `year` int(11) NOT NULL,
   `description` varchar(1024) NOT NULL,
-  `photo` varchar(256) NOT NULL
+  `photo` varchar(256) NOT NULL,
+  `x_coordinate` int(11),
+  `y_coordinate` int(11)
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `artist_traits` (
@@ -56,7 +58,14 @@ CREATE TABLE `gallery_traits` (
   FOREIGN KEY (`gallery_id`) REFERENCES `gallery`(`gallery_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `galletry_art` (
+CREATE TABLE `gallery_art` (
+  `gallery_id` int(128) NOT NULL,
+  `art_id` int(128) NOT NULL,
+  FOREIGN KEY (`gallery_id`) REFERENCES `gallery`(`gallery_id`),
+  FOREIGN KEY (`art_id`) REFERENCES `art`(`art_id`)
+) ENGINE=INNODB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `favorite_gallery` (
   `gallery_id` int(128) NOT NULL,
   `art_id` int(128) NOT NULL,
   FOREIGN KEY (`gallery_id`) REFERENCES `gallery`(`gallery_id`),
