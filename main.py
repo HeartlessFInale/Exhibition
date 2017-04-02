@@ -1,16 +1,19 @@
-from flask import g, abort,Flask, render_template, request, session, url_for, redirect
+from flask import g, abort, Flask, render_template, request, session, url_for, redirect, jsonify
 from functools import wraps
 import pymysql
 import datetime
 import os
 import base64
+import SQLConnection
+import json
 
 app = Flask(__name__)
 
-#Temp secret key, make random, basically session key
+# Temp secret key, make random, basically session key
 app.secret_key = os.urandom(32)
 
-#conn = pymysql.connect(host = 'localhost',
+
+# conn = pymysql.connect(host = 'localhost',
 #                       user= 'root',
 #                       password = 'root',
 #                       db = 'findfolks',
@@ -19,7 +22,12 @@ app.secret_key = os.urandom(32)
 
 @app.route("/")
 def home():
-	return "Hello World!";
-	
+    result = SQLConnection.getArtistList()
+    test = jsonify(result)
+    return test
+
+
 if __name__ == "__main__":
-    app.run('127.0.0.1', 5000, debug = True)
+    app.run('127.0.0.1', 5000, debug=True)
+
+pass
