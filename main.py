@@ -1,6 +1,4 @@
 from flask import g, abort, Flask, render_template, request, session, url_for, redirect, jsonify
-from functools import wraps
-import datetime
 import os
 import base64
 import SQLConnection
