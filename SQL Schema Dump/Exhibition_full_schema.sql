@@ -33,7 +33,7 @@ CREATE TABLE `art` (
   PRIMARY KEY (`art_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `art_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +42,7 @@ CREATE TABLE `art` (
 
 LOCK TABLES `art` WRITE;
 /*!40000 ALTER TABLE `art` DISABLE KEYS */;
+INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'');
 /*!40000 ALTER TABLE `art` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +60,7 @@ CREATE TABLE `artist` (
   `picture` varchar(256) NOT NULL,
   PRIMARY KEY (`artist_id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,6 +120,7 @@ CREATE TABLE `exhibited_artist` (
 
 LOCK TABLES `exhibited_artist` WRITE;
 /*!40000 ALTER TABLE `exhibited_artist` DISABLE KEYS */;
+INSERT INTO `exhibited_artist` VALUES (1,1);
 /*!40000 ALTER TABLE `exhibited_artist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,6 +233,48 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'exhibition'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `sp_getGalleryDetails` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getGalleryDetails`(
+	IN p_gallery_id INT
+)
+BEGIN
+	#DECLARE p_artist_id INT;
+    
+    /* QUERY TO FETCH GALLERY DETAILS */
+	SELECT ga.gallery_id, ga.name, ga.year, ga.description, ga.photo, ga.latitude, ga.longitude, IF(fav.gallery_id is NOT NULL, TRUE,FALSE) as 'is_fav' 
+    FROM gallery ga
+    LEFT JOIN favorite_gallery fav
+    ON ga.gallery_id = fav.gallery_id
+    WHERE ga.gallery_id = p_gallery_id;
+    
+    /* QUERY TO FETCH ARTIST EXHIBITED BY GALLERY */
+    SELECT @p_artist_id:=a.artist_id as artist_id, a.name, a.picture
+    FROM exhibited_artist ea 
+    JOIN artist a
+    ON ea.artist_id = a.artist_id
+    WHERE gallery_id = p_gallery_id;
+    
+    /* QUERY TO FETCH ARTWORK EXHIBITED BY GALLERY */
+    SELECT art_id, name, description, picture 
+    FROM art 
+    WHERE artist_id = @p_artist_id;
+    
+    
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_getGalleryList` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -295,4 +339,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-02 20:24:42
+-- Dump completed on 2017-04-03  0:40:20

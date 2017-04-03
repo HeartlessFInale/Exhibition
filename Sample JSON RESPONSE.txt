@@ -20,3 +20,30 @@ SAMPLE JSON RESPONSE FOR ARTIST LIST
     "photo": ""
   }
 ]
+
+
+SAMPLE JSON RESPONSE FOR GALLERY DETAIL
+
+{
+  "gallery_art": {
+    "art_id": 1, 
+    "description": "Test Art Description 1", 
+    "name": "Art_1", 
+    "picture": ""
+  }, 
+  "gallery_artist": {
+    "artist_id": 1, 
+    "name": "Artist 1", 
+    "picture": ""
+  }, 
+  "gallery_detail": {
+    "description": "This is a Test Description", 
+    "gallery_id": 1, 
+    "is_fav": 1, 
+    "latitude": 40.7233574, 
+    "longitude": -73.9932855, 
+    "name": "Gallery 1", 
+    "photo": "", 
+    "year": 2001
+  }
+}

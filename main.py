@@ -57,6 +57,21 @@ def addNewGallery():
         error = 'Internal Server Error: {}'.format(e.message)
         return jsonify(error)
 
+
+@app.route("/getGalleryDetail")
+def getGalleryDetail():
+    try:
+        gallery_id = request.args['gallery_id']
+
+        result = SQLConnection.get_gallery_details(gallery_id)
+
+        return jsonify(result)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000, debug=True)
 
