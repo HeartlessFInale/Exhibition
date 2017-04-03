@@ -4,9 +4,19 @@ SAMPLE JSON RESPONSE FOR ARTIST LIST
   {
     "description": "This is a Test Description", 
     "gallery_id": 1, 
+    "is_fav": 1, 
     "latitude": 40.7233574, 
     "longitude": -73.9932855, 
     "name": "Gallery 1", 
+    "photo": ""
+  }, 
+  {
+    "description": "Test Description 2", 
+    "gallery_id": 2, 
+    "is_fav": 0, 
+    "latitude": 40.7594631, 
+    "longitude": -74.0055771, 
+    "name": "Gallery 2", 
     "photo": ""
   }
 ]
