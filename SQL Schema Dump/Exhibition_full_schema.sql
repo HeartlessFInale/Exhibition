@@ -165,7 +165,7 @@ CREATE TABLE `gallery` (
   `create_date` datetime DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL,
   PRIMARY KEY (`gallery_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +174,7 @@ CREATE TABLE `gallery` (
 
 LOCK TABLES `gallery` WRITE;
 /*!40000 ALTER TABLE `gallery` DISABLE KEYS */;
-INSERT INTO `gallery` VALUES (1,'Gallery 1',2001,'This is a Test Description','',40.7233574,-73.9932855,'2017-04-02 17:27:33','2017-04-02 17:27:33');
+INSERT INTO `gallery` VALUES (1,'Gallery 1',2001,'This is a Test Description','',40.7233574,-73.9932855,'2017-04-02 17:27:33','2017-04-02 17:27:33'),(2,'Gallery 2',2010,'Test Description 2','',40.7594631,-74.0055771,'2017-04-02 20:21:55','2017-04-02 20:21:55');
 /*!40000 ALTER TABLE `gallery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,17 +239,16 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getGalleryList`(
 	IN p_artist_id INT
 )
 BEGIN
-	SELECT ga.gallery_id,ga.name,ga.photo,ga.description,ga.latitude,ga.longitude
+	SELECT ga.gallery_id,ga.name,ga.photo,ga.description,ga.latitude,ga.longitude, IF(fav.gallery_id is NOT NULL, TRUE,FALSE) as 'is_fav' 
     FROM gallery ga
-    JOIN favorite_gallery fav
-    ON ga.gallery_id = fav.gallery_id
-    WHERE fav.artist_id = p_artist_id;
+    LEFT JOIN favorite_gallery fav
+    ON ga.gallery_id = fav.gallery_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -296,4 +295,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-02 20:06:59
+-- Dump completed on 2017-04-02 20:24:42
