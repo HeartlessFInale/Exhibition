@@ -1,6 +1,5 @@
 from flask import g, abort, Flask, render_template, request, session, url_for, redirect, jsonify
 from functools import wraps
-import pymysql
 import datetime
 import os
 import base64
@@ -22,12 +21,45 @@ app.secret_key = os.urandom(32)
 
 @app.route("/")
 def home():
-    result = SQLConnection.getArtistList()
-    test = jsonify(result)
-    return test
+    return 'You have reached Exhibitions API '
 
+
+@app.route("/getGalleryList")
+def getArtistList():
+    try:
+        artist_id = int(request.args['artist_id'])
+
+        if artist_id is None:
+            return jsonify('Error: Artist ID required')
+
+        result = SQLConnection.get_gallery_list(artist_id)
+
+        return jsonify(result)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route("/addNewGallery")
+def addNewGallery():
+    try:
+        gallery_name = request.args['gallery_name']
+        year = request.args['year']
+        desc = request.args['desc']
+        photoBlob = request.args['photoBlob']
+        latit = request.args['latit']
+        longit = request.args['longit']
+
+        result = SQLConnection.add_new_gallery(gallery_name, year, desc, photoBlob, latit, longit)
+
+        return jsonify(result)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
 
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000, debug=True)
 
-pass
+

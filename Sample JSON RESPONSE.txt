@@ -1,24 +1,12 @@
 SAMPLE JSON RESPONSE FOR ARTIST LIST
 
 [
-  [
-    1, 
-    "Gallery 1", 
-    "", 
-    "This is a Test Description", 
-    40.7233574, 
-    -73.9932855
-  ]
-]
-
-
-SAMPLE STRUCTURE OF RESPONSE
-[
-	gallery_id,
-	name,
-	photo,
-	description,
-	latitude,
-	longitude
-	
+  {
+    "description": "This is a Test Description", 
+    "gallery_id": 1, 
+    "latitude": 40.7233574, 
+    "longitude": -73.9932855, 
+    "name": "Gallery 1", 
+    "photo": ""
+  }
 ]
