@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    //MainActivity
 
     private RecyclerView recyclerView;
     private List<Gallery> galleries = new ArrayList<>();
