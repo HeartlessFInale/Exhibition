@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.exhibition.exhibition.GalleryProfileActivity;
 import com.exhibition.exhibition.R;
@@ -33,7 +34,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        holder.galleryName.setText(galleries.get(position).name);
     }
 
     @Override
@@ -42,13 +43,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView galleryName;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            galleryName = (TextView) itemView.findViewById(R.id.galleryName);
             (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    context.startActivity(new Intent(context, GalleryProfileActivity.class));
+                    Intent intent = new Intent(context, GalleryProfileActivity.class);
+                    intent.putExtra("gallery", galleries.get(getAdapterPosition()));
+                    context.startActivity(intent);
                 }
             });
         }
