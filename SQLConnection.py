@@ -98,7 +98,6 @@ def add_new_artist(artist_name, description, file_name):
         print e
         return e.message
 
-
 def upload_artwork(art_name, desc, artist_id, file_name, gallery_id):
     try:
         conn = CreateConnection()
