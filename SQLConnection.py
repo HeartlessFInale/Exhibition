@@ -12,7 +12,7 @@ def CreateConnection():
 
 def CloseConnection(conn):
     try:
-        conn.Close()
+        conn.close()
 
     except Exception as e:
         print e
@@ -45,6 +45,8 @@ def add_new_gallery(gallery_name, year, desc, photoBlob, latit, longit):
 
         result = cursor.callproc('sp_insertGallery', (gallery_name, year, desc, photoBlob, latit, longit))
 
+        conn.commit()
+
         CloseConnection(conn)
 
         return result
@@ -59,7 +61,7 @@ def get_gallery_details(gallery_id):
 
         cursor = conn.cursor()
 
-        cursor.callproc('sp_getGalleryDetails',(gallery_id,))
+        cursor.callproc('sp_getGalleryDetails', (gallery_id,))
 
         result = {'gallery_detail':'', 'gallery_artist':'', 'gallery_art': ''}
 
@@ -76,5 +78,41 @@ def get_gallery_details(gallery_id):
     except Exception as e:
         print e
         return e.message
-#getArtistList()
-#addNewGallery('Gallery 2', 2010, 'Test Description', '', 40.7554826, -73.9968223)
+
+
+def add_new_artist(artist_name, description, file_name):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        result = cursor.callproc('sp_insertArtist', (artist_name, description, file_name))
+
+        conn.commit()
+
+        CloseConnection(conn)
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
+
+
+def upload_artwork(art_name, desc, artist_id, file_name, gallery_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        result = cursor.callproc('sp_uploadArt', (art_name, desc, artist_id, file_name, gallery_id))
+
+        conn.commit()
+
+        CloseConnection(conn)
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
