@@ -33,7 +33,7 @@ CREATE TABLE `art` (
   PRIMARY KEY (`art_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `art_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `art` (
 
 LOCK TABLES `art` WRITE;
 /*!40000 ALTER TABLE `art` DISABLE KEYS */;
-INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'');
+INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,''),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg');
 /*!40000 ALTER TABLE `art` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,7 +60,7 @@ CREATE TABLE `artist` (
   `picture` varchar(256) NOT NULL,
   PRIMARY KEY (`artist_id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -181,6 +181,33 @@ INSERT INTO `gallery` VALUES (1,'Gallery 1',2001,'This is a Test Description',''
 UNLOCK TABLES;
 
 --
+-- Table structure for table `gallery_art`
+--
+
+DROP TABLE IF EXISTS `gallery_art`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `gallery_art` (
+  `gallery_id` int(128) NOT NULL,
+  `art_id` int(128) NOT NULL,
+  KEY `gallery_id` (`gallery_id`),
+  KEY `art_id` (`art_id`),
+  CONSTRAINT `gallery_art_ibfk_1` FOREIGN KEY (`gallery_id`) REFERENCES `gallery` (`gallery_id`),
+  CONSTRAINT `gallery_art_ibfk_2` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gallery_art`
+--
+
+LOCK TABLES `gallery_art` WRITE;
+/*!40000 ALTER TABLE `gallery_art` DISABLE KEYS */;
+INSERT INTO `gallery_art` VALUES (1,4),(1,6);
+/*!40000 ALTER TABLE `gallery_art` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `gallery_traits`
 --
 
@@ -205,34 +232,36 @@ LOCK TABLES `gallery_traits` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `galletry_art`
---
-
-DROP TABLE IF EXISTS `galletry_art`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `galletry_art` (
-  `gallery_id` int(128) NOT NULL,
-  `art_id` int(128) NOT NULL,
-  KEY `gallery_id` (`gallery_id`),
-  KEY `art_id` (`art_id`),
-  CONSTRAINT `galletry_art_ibfk_1` FOREIGN KEY (`gallery_id`) REFERENCES `gallery` (`gallery_id`),
-  CONSTRAINT `galletry_art_ibfk_2` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `galletry_art`
---
-
-LOCK TABLES `galletry_art` WRITE;
-/*!40000 ALTER TABLE `galletry_art` DISABLE KEYS */;
-/*!40000 ALTER TABLE `galletry_art` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping routines for database 'exhibition'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `sp_addFavoriteGallery` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addFavoriteGallery`(
+	IN p_gallery_id int,
+    IN p_artist_id int
+)
+BEGIN
+	INSERT INTO `exhibition`.`favorite_gallery`
+	(`gallery_id`,
+	`artist_id`)
+	VALUES
+	(p_gallery_id,
+	p_artist_id);
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_getGalleryDetails` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -299,6 +328,38 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_insertArtist` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insertArtist`(
+	IN p_name varchar(128),
+    IN p_desc varchar(1024),
+    IN p_picture varchar(256)
+    
+)
+BEGIN
+	INSERT INTO `exhibition`.`artist`
+	(`name`,
+	`description`,
+	`picture`)
+	VALUES
+	(p_name,
+	p_desc,
+	p_picture);
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_insertGallery` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -329,6 +390,47 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_uploadArt` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_uploadArt`(
+	IN p_name varchar(128),
+    IN p_desc varchar(1024),
+    IN p_artist_id int,
+    IN p_picture varchar(256),
+	IN p_gallery_id int
+)
+BEGIN
+	INSERT INTO `exhibition`.`art`
+	(`name`,`description`,`artist_id`,`picture`)
+	VALUES
+	(p_name,p_desc,p_artist_id,p_picture);
+	
+    
+    IF (p_gallery_id is not null)
+    THEN
+		SET @art_id = LAST_INSERT_ID();
+        
+        INSERT INTO `exhibition`.`gallery_art`
+		(`gallery_id`,`art_id`)
+		VALUES
+		(p_gallery_id, @art_id);
+
+    END IF;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -339,4 +441,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-03  0:40:20
+-- Dump completed on 2017-04-09 18:41:24
