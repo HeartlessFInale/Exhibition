@@ -88,6 +88,8 @@ def add_new_artist(artist_name, description, file_name):
 
         result = cursor.callproc('sp_insertArtist', (artist_name, description, file_name))
 
+        conn.commit()
+
         CloseConnection(conn)
 
         return result
