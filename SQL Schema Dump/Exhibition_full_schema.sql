@@ -214,7 +214,7 @@ DROP TABLE IF EXISTS `art_traits`;
 CREATE TABLE `art_traits` (
 	`art_id` int(11) NOT NULL AUTO_INCREMENT,
 	`trait` varchar(128) NOT NULL,
-	KEY `artist_id` (`artist_id`),
+	KEY `art_id` (`art_id`),
 	CONSTRAINT `art_traits_ibfk_1` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
