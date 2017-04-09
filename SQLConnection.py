@@ -45,6 +45,8 @@ def add_new_gallery(gallery_name, year, desc, photoBlob, latit, longit):
 
         result = cursor.callproc('sp_insertGallery', (gallery_name, year, desc, photoBlob, latit, longit))
 
+        conn.commit()
+
         CloseConnection(conn)
 
         return result
@@ -84,7 +86,26 @@ def add_new_artist(artist_name, description, file_name):
 
         cursor = conn.cursor()
 
-        result = cursor.callproc('sp_insertArtist',(artist_name, description, file_name))
+        result = cursor.callproc('sp_insertArtist', (artist_name, description, file_name))
+
+        CloseConnection(conn)
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
+
+
+def upload_artwork(art_name, desc, artist_id, file_name, gallery_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        result = cursor.callproc('sp_uploadArt', (art_name, desc, artist_id, file_name, gallery_id))
+
+        conn.commit()
 
         CloseConnection(conn)
 
