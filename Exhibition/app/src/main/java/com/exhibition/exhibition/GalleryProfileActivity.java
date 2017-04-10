@@ -52,6 +52,7 @@ public class GalleryProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery_profile);
         gallery = getIntent().getParcelableExtra("gallery");
         getSupportActionBar().setTitle(gallery.name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         name = (TextView) findViewById(R.id.textView);
         description = (TextView) findViewById(R.id.textView4);
         likeToggle = (ToggleButton) findViewById(R.id.imageView2);
@@ -119,6 +120,9 @@ public class GalleryProfileActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_submit) {
             new GetMyArts().execute();
+        }
+        if (id == android.R.id.home) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

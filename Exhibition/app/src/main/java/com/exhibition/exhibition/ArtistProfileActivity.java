@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +25,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ArtistProfileActivity extends AppCompatActivity {
     Artist artist;
     CircleImageView circleImageView;
-    TextView textView;
+    TextView bio;
+    TextView name;
     private ArtistDetails artistDetails;
     private RecyclerView artRecyclerView;
     private ArtAdapter artAdapter;
@@ -34,6 +36,7 @@ public class ArtistProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_profile);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         artist = getIntent().getParcelableExtra("artist");
         getSupportActionBar().setTitle(artist.name);
         circleImageView = (CircleImageView) findViewById(R.id.artistProfile);
@@ -42,8 +45,10 @@ public class ArtistProfileActivity extends AppCompatActivity {
                     .load(ApiHelper.URL + ApiHelper.IMAGES + artist.picture)
                     .into(circleImageView);
         }
-        textView = (TextView) findViewById(R.id.bio);
-        textView.setText(artist.name);
+        bio = (TextView) findViewById(R.id.bio);
+        bio.setText(artist.description);
+        name = (TextView) findViewById(R.id.name);
+        name.setText(artist.name);
         artRecyclerView = (RecyclerView) findViewById(R.id.artRecyclerView);
         artAdapter = new ArtAdapter(this, arts);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -76,6 +81,16 @@ public class ArtistProfileActivity extends AppCompatActivity {
 
     private void updateUI() {
         artAdapter.notifyDataSetChanged();
+        bio.setText(artistDetails.artist.description);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
