@@ -161,7 +161,7 @@ CREATE TABLE `gallery` (
   `name` varchar(128) NOT NULL,
   `year` int(11) NOT NULL,
   `description` varchar(1024) NOT NULL,
-  `photo` blob NOT NULL,
+  `photo` varchar(256) NOT NULL,
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE `gallery` (
 
 LOCK TABLES `gallery` WRITE;
 /*!40000 ALTER TABLE `gallery` DISABLE KEYS */;
-INSERT INTO `gallery` VALUES (1,'Gallery 1',2001,'This is a Test Description','',40.7233574,-73.9932855,'2017-04-02 17:27:33','2017-04-02 17:27:33'),(2,'Gallery 2',2010,'Test Description 2','',40.7594631,-74.0055771,'2017-04-02 20:21:55','2017-04-02 20:21:55');
+INSERT INTO `gallery` VALUES (1,'Gallery 1',2001,'This is a Test Description','galleryLogo_1491747860.jpeg',40.7233574,-73.9932855,'2017-04-02 17:27:33','2017-04-02 17:27:33'),(2,'Gallery 2',2010,'Test Description 2','art_gallery_logo_14917478860.jpeg',40.7594631,-74.0055771,'2017-04-02 20:21:55','2017-04-02 20:21:55');
 /*!40000 ALTER TABLE `gallery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -470,4 +470,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-09 21:16:13
+-- Dump completed on 2017-04-09 23:58:32
