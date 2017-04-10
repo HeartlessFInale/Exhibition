@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setTitle("Galleries Near You");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         adapter = new GalleryAdapter(this, galleries);
         recyclerView.setAdapter(adapter);

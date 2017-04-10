@@ -12,12 +12,20 @@ public class Gallery implements Parcelable {
     public int image;
     public String description;
     public String artType;
+    public int id;
+    public int isFav;
+    public int year;
+    public String photo;
+    public double latitude;
+    public double longitude;
 
     public Gallery() {}
 
-    public Gallery(String name, String description) {
+    public Gallery(String name, String description, int id, int isFav) {
         this.name = name;
         this.description = description;
+        this.id = id;
+        this.isFav = isFav;
     }
 
     protected Gallery(Parcel in) {
@@ -25,6 +33,9 @@ public class Gallery implements Parcelable {
         image = in.readInt();
         description = in.readString();
         artType = in.readString();
+        id = in.readInt();
+        isFav = in.readInt();
+        photo = in.readString();
     }
 
     public static final Creator<Gallery> CREATOR = new Creator<Gallery>() {
@@ -39,6 +50,14 @@ public class Gallery implements Parcelable {
         }
     };
 
+    public Gallery(String name, String description, int id, int isFav, String photo) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.isFav = isFav;
+        this.photo = photo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -50,5 +69,8 @@ public class Gallery implements Parcelable {
         dest.writeInt(image);
         dest.writeString(description);
         dest.writeString(artType);
+        dest.writeInt(id);
+        dest.writeInt(isFav);
+        dest.writeString(photo);
     }
 }
