@@ -37,6 +37,7 @@ def home():
     '''
     return render_template('index.html')
 
+
 @app.route("/getGalleryList")
 def getGalleryList():
     try:
@@ -79,6 +80,20 @@ def getGalleryDetail():
         gallery_id = request.args['gallery_id']
 
         result = SQLConnection.get_gallery_details(gallery_id)
+
+        return jsonify(result)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route("/getArtistDetail")
+def getArtistDetail():
+    try:
+        artist_id = request.args['artist_id']
+
+        result = SQLConnection.get_artist_details(artist_id)
 
         return jsonify(result)
 
@@ -157,6 +172,7 @@ def uploadArtwork():
     except Exception as e:
         error = 'Internal Server Error: {}'.format(e.message)
         return jsonify(error)
+
 
 @app.route('/images/<path:filename>')
 def images(filename):
