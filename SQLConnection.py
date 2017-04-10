@@ -63,7 +63,7 @@ def get_gallery_details(gallery_id):
 
         cursor.callproc('sp_getGalleryDetails', (gallery_id,))
 
-        result = {'gallery_detail':'', 'gallery_artist':'', 'gallery_art': ''}
+        result = {'gallery_detail':[], 'gallery_artist':[], 'gallery_art': []}
 
         result_headers = ['gallery_detail', 'gallery_artist', 'gallery_art']
 
