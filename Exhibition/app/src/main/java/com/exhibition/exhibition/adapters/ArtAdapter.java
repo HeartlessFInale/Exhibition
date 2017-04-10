@@ -1,7 +1,6 @@
 package com.exhibition.exhibition.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.exhibition.exhibition.ApiHelper;
-import com.exhibition.exhibition.ArtistProfileActivity;
 import com.exhibition.exhibition.R;
+import com.exhibition.exhibition.models.Art;
 import com.exhibition.exhibition.models.Artist;
 
 import java.util.List;
@@ -22,11 +21,11 @@ import java.util.List;
  * Created by yatinkaushal on 4/1/17.
  */
 
-public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
+public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
     private Context context;
-    private List<Artist> artists;
+    private List<Art> artists;
 
-    public ArtistAdapter(Context context, List<Artist> artists) {
+    public ArtAdapter(Context context, List<Art> artists) {
         this.context = context;
         this.artists = artists;
     }
@@ -39,8 +38,8 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Glide.with(context)
-            .load(ApiHelper.URL + ApiHelper.IMAGES + artists.get(position).picture)
-            .into(holder.imageView);
+                .load(ApiHelper.URL + ApiHelper.IMAGES + artists.get(position).picture)
+                .into(holder.imageView);
         holder.textView.setText(artists.get(position).name);
     }
 
@@ -60,10 +59,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
             (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Toast.makeText(context, "Artist Page coming soon!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, ArtistProfileActivity.class);
-                    intent.putExtra("artist", artists.get(getAdapterPosition()));
-                    context.startActivity(intent);
+                    Toast.makeText(context, "Art Page coming soon!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
