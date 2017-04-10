@@ -68,7 +68,8 @@ def get_gallery_details(gallery_id):
         result_headers = ['gallery_detail', 'gallery_artist', 'gallery_art']
 
         for index, dataset in enumerate(cursor):
-            result[result_headers[index]] = dataset
+            result[result_headers[index]] = cursor._rows
+            #test = cursor.fetchall()
             cursor.nextset()
 
         CloseConnection(conn)
@@ -97,6 +98,7 @@ def add_new_artist(artist_name, description, file_name):
     except Exception as e:
         print e
         return e.message
+
 
 def upload_artwork(art_name, desc, artist_id, file_name, gallery_id):
     try:
