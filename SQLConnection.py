@@ -150,3 +150,22 @@ def upload_artwork(art_name, desc, artist_id, file_name, gallery_id):
     except Exception as e:
         print e
         return e.message
+
+
+def deleteArt(art_id,artist_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        result = cursor.callproc('sp_deleteArt',(art_id,artist_id))
+
+        conn.commit()
+
+        CloseConnection(conn)
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message

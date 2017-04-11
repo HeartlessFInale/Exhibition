@@ -130,20 +130,21 @@ def addNewArtist():
         return jsonify(error)
 
 
-@app.route('/uploadArtwork')
+@app.route('/uploadArtwork',methods = ['POST'])
 def uploadArtwork():
     try:
-        '''
+        data = request.data
         art_name = request.args['art_name']
         description = request.args['desc']
         artist_id = request.args['artist_id']
-        if request.args['gallery_id']:
+        if 'gallery_id' in request.args:
             gallery_id = request.args['gallery_id']
         else:
-            gallery_id = ''
+            gallery_id = None
 
-        img_bytes = request.args['img_bytes']
+        img_bytes = request.data
         file_name = request.args['file_name']
+
         '''
         art_name = 'Test Artwork'
         description = 'This is Test Artwork Upload'
@@ -154,6 +155,7 @@ def uploadArtwork():
         img = open('UPLOADS/30dayAbs.jpg', 'rb')
         img_bytes = img.read()
         file_name = '30daysAbs.jpg'
+        '''
 
         file_name_arr = file_name.split('.')
         curr_time = int(time.time())
@@ -166,8 +168,23 @@ def uploadArtwork():
 
         result = SQLConnection.upload_artwork(art_name, description, artist_id, new_file_name, gallery_id)
 
-        return jsonify(result)
+        return jsonify('Successfully Uploaded Art')
 
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route('/deleteArt')
+def deleteArt():
+    try:
+        art_id = request.args['art_id']
+        artist_id = request.args['artist_id']
+
+        result = SQLConnection.deleteArt(art_id, artist_id)
+
+        return jsonify('Successfully Deleted Art')
 
     except Exception as e:
         error = 'Internal Server Error: {}'.format(e.message)
