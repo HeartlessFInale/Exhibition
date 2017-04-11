@@ -33,7 +33,7 @@ CREATE TABLE `art` (
   PRIMARY KEY (`art_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `art_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `art` (
 
 LOCK TABLES `art` WRITE;
 /*!40000 ALTER TABLE `art` DISABLE KEYS */;
-INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg');
+INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg'),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg'),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg'),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg');
 /*!40000 ALTER TABLE `art` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -203,7 +203,7 @@ CREATE TABLE `gallery_art` (
 
 LOCK TABLES `gallery_art` WRITE;
 /*!40000 ALTER TABLE `gallery_art` DISABLE KEYS */;
-INSERT INTO `gallery_art` VALUES (1,4),(1,6);
+INSERT INTO `gallery_art` VALUES (1,1),(1,4),(1,6),(1,12),(1,13),(1,14);
 /*!40000 ALTER TABLE `gallery_art` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -322,9 +322,11 @@ BEGIN
     WHERE gallery_id = p_gallery_id;
     
     /* QUERY TO FETCH ARTWORK EXHIBITED BY GALLERY */
-    SELECT art_id, name, description, picture 
-    FROM art 
-    WHERE artist_id = @p_artist_id;
+    SELECT a.art_id, a.name, a.description, a.picture 
+    FROM art a
+    JOIN gallery_art ga
+    ON a.art_id = ga.art_id
+    WHERE ga.gallery_id = p_gallery_id;
     
     
 END ;;
@@ -470,4 +472,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-09 23:58:32
+-- Dump completed on 2017-04-11 17:14:49
