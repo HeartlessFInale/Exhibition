@@ -1,5 +1,6 @@
 package com.exhibition.exhibition;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +24,7 @@ import com.exhibition.exhibition.models.Artist;
 import com.exhibition.exhibition.models.ArtistDetails;
 import com.exhibition.exhibition.models.Gallery;
 import com.exhibition.exhibition.models.GalleryDetails;
+import com.exhibition.exhibition.models.RefreshableActivity;
 
 import org.json.JSONException;
 
@@ -30,7 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryProfileActivity extends AppCompatActivity {
+public class GalleryProfileActivity extends AppCompatActivity implements RefreshableActivity {
     private RecyclerView artistRecyclerView;
     private RecyclerView artRecyclerView;
     private ArtistAdapter artistAdapter;
@@ -45,6 +47,7 @@ public class GalleryProfileActivity extends AppCompatActivity {
     private TextView year;
     private GalleryDetails galleryDetails;
     private ArtistDetails artistDetails;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +61,8 @@ public class GalleryProfileActivity extends AppCompatActivity {
         likeToggle = (ToggleButton) findViewById(R.id.imageView2);
         imageView = (ImageView) findViewById(R.id.imageView);
         year = (TextView) findViewById(R.id.textView2);
-        likeToggle.setChecked(gallery.isFav == 1);
-        name.setText(gallery.name);
-        description.setText(gallery.description);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
         artistRecyclerView = (RecyclerView) findViewById(R.id.artistRecyclerView);
         artRecyclerView = (RecyclerView) findViewById(R.id.artRecyclerView);
 //        for (int i = 0; i < 10; i++) {
@@ -74,7 +76,20 @@ public class GalleryProfileActivity extends AppCompatActivity {
         artistRecyclerView.setAdapter(artistAdapter);
         artRecyclerView.setLayoutManager(layoutManager2);
         artRecyclerView.setAdapter(artAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refresh();
+    }
+
+    @Override
+    public void refresh() {
+        arts.clear();
+        artists.clear();
         new GetGalleryDetails().execute();
+        progressDialog.show();
     }
 
     private class GetGalleryDetails extends AsyncTask<Void, Void, Void> {
@@ -83,6 +98,7 @@ public class GalleryProfileActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             try {
                 galleryDetails = ApiHelper.getGalleryDetails(gallery.id);
+                gallery = galleryDetails.gallery;
                 artists.addAll(galleryDetails.artists);
                 arts.addAll(galleryDetails.arts);
             } catch (Exception e) {
@@ -101,12 +117,16 @@ public class GalleryProfileActivity extends AppCompatActivity {
     private void updateUI() {
         artAdapter.notifyDataSetChanged();
         artistAdapter.notifyDataSetChanged();
-        year.setText("Since " + galleryDetails.gallery.year);
-        if (!TextUtils.isEmpty(galleryDetails.gallery.photo)) {
+        likeToggle.setChecked(gallery.isFav == 1);
+        name.setText(gallery.name);
+        description.setText(gallery.description);
+        year.setText("Since " + gallery.year);
+        if (!TextUtils.isEmpty(gallery.photo)) {
             Glide.with(this)
-                    .load(ApiHelper.URL + ApiHelper.IMAGES + galleryDetails.gallery.photo)
+                    .load(ApiHelper.URL + ApiHelper.IMAGES + gallery.photo)
                     .into(imageView);
         }
+        progressDialog.hide();
     }
 
     @Override

@@ -25,7 +25,7 @@ import okhttp3.Response;
  */
 
 public class ApiHelper {
-    public static final String URL = "http://cc101a62.ngrok.io/";
+    public static final String URL = "http://729d9cff.ngrok.io/";
     public static final String IMAGES = "images/";
 
     private static String getGalleryList() throws IOException {
@@ -131,4 +131,13 @@ public class ApiHelper {
         return arts;
     }
 
+    public static void deleteArt(String artId) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"deleteArt?art_id=" + artId)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper", s);
+    }
 }

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Exhibition</string>
     <string name="action_submit">Submit Artwork</string>
+    <string name="select_picture">Select Picture</string>
 </resources>
