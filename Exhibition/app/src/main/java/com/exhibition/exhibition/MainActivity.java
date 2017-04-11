@@ -1,5 +1,6 @@
 package com.exhibition.exhibition;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,16 +18,26 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<Gallery> galleries = new ArrayList<>();
     private GalleryAdapter adapter;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setTitle("Galleries Near You");
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         adapter = new GalleryAdapter(this, galleries);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        galleries.clear();
         new GetGalleryList().execute();
+        progressDialog.show();
     }
 
     private class GetGalleryList extends AsyncTask<Void, Void, Void> {
@@ -51,5 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUI() {
         adapter.notifyDataSetChanged();
+        progressDialog.hide();
     }
 }
