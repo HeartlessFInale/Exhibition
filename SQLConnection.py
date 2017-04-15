@@ -152,13 +152,13 @@ def upload_artwork(art_name, desc, artist_id, file_name, gallery_id):
         return e.message
 
 
-def deleteArt(art_id,artist_id):
+def deleteArt(art_id):
     try:
         conn = CreateConnection()
 
         cursor = conn.cursor()
 
-        result = cursor.callproc('sp_deleteArt',(art_id,artist_id))
+        result = cursor.callproc('sp_deleteArt', (art_id,))
 
         conn.commit()
 
