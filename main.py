@@ -180,9 +180,8 @@ def uploadArtwork():
 def deleteArt():
     try:
         art_id = request.args['art_id']
-        artist_id = request.args['artist_id']
 
-        result = SQLConnection.deleteArt(art_id, artist_id)
+        result = SQLConnection.deleteArt(art_id)
 
         return jsonify('Successfully Deleted Art')
 
