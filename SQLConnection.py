@@ -169,3 +169,23 @@ def deleteArt(art_id):
     except Exception as e:
         print e
         return e.message
+
+
+def addSubmission(art_id, artist_id, gallery_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_addSubmission', (art_id, artist_id, gallery_id))
+
+        conn.commit()
+
+        result = cursor.fetchone()
+
+        CloseConnection(conn)
+
+        return  result
+    except Exception as e:
+        print e
+        return e.message
