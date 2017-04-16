@@ -200,6 +200,21 @@ def images(filename):
         return jsonify(error)
 
 
+@app.route('/addSubmission')
+def addSubmission():
+    try:
+        art_id = request.args['art_id']
+        artist_id = request.args['artist_id']
+        gallery_id = request.args['gallery_id']
+
+        result = SQLConnection.addSubmission(art_id, artist_id, gallery_id)
+
+        return jsonify(result)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
 
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000)
