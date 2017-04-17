@@ -3,6 +3,7 @@ package com.exhibition.exhibition.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -16,9 +17,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.exhibition.exhibition.ApiHelper;
+import com.exhibition.exhibition.ArtDetailActivity;
 import com.exhibition.exhibition.R;
 import com.exhibition.exhibition.models.Art;
 import com.exhibition.exhibition.models.RefreshableActivity;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,19 +34,22 @@ import java.util.List;
 public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
     private Context context;
     private List<Art> artists;
-    private boolean canDelete;
     private RefreshableActivity refreshableActivity;
+    private int action;
+    private int galleryId;
 
-    public ArtAdapter(Context context, List<Art> artists) {
+    public final static int ACTION_VIEW = 1;
+    public final static int ACTION_DELETE = 2;
+    public final static int ACTION_SUBMIT = 3;
+    private AlertDialog alertDialog;
+
+    public ArtAdapter(Context context, List<Art> artists, int action) {
         this.context = context;
         this.artists = artists;
-    }
-
-    public ArtAdapter(Context context, List<Art> arts, RefreshableActivity refreshableActivity) {
-        this.context = context;
-        this.artists = arts;
-        this.refreshableActivity = refreshableActivity;
-        canDelete = true;
+        this.action = action;
+        if (action == ACTION_DELETE || action == ACTION_SUBMIT) {
+            this.refreshableActivity = (RefreshableActivity) context;
+        }
     }
 
     @Override
@@ -63,6 +70,14 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
         return artists.size();
     }
 
+    public void setGalleryId(int galleryId) {
+        this.galleryId = galleryId;
+    }
+
+    public void setAlertDialog(AlertDialog alertDialog) {
+        this.alertDialog = alertDialog;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         ImageView imageView;
@@ -73,13 +88,30 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
             textView = (TextView) itemView.findViewById(R.id.textView);
-            (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, "Art Page coming soon!", Toast.LENGTH_SHORT).show();
-                }
-            });
-            if (canDelete) {
+            if (action != ACTION_SUBMIT) {
+                (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Toast.makeText(context, "Art Page coming soon!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, ArtDetailActivity.class);
+                        intent.putExtra("art", artists.get(getAdapterPosition()));
+                        context.startActivity(intent);
+                    }
+                });
+            } else {
+                (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Intent intent = new Intent(context, SubmitArtActivity.class);
+//                        SubmissionModel submissionModel = new SubmissionModel(String.valueOf(galleryId), artists.get(getAdapterPosition()).picture, String.valueOf(artists.get(getAdapterPosition()).id), String.valueOf(artists.get(getAdapterPosition()).artist_id));
+//                        intent.putExtra("submission_model", submissionModel);
+//                        context.startActivity(intent);
+                        alertDialog.dismiss();
+                        showConfirmationDialog(getAdapterPosition());
+                    }
+                });
+            }
+            if (action == ACTION_DELETE) {
                 cardView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -101,12 +133,32 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
         }
     }
 
+    private void showConfirmationDialog(final int position) {
+        ImageView imageView = new ImageView(context);
+        Glide.with(context)
+                .load(ApiHelper.URL + ApiHelper.IMAGES + artists.get(position).picture)
+                .into(imageView);
+        alertDialog = new AlertDialog.Builder(context)
+                .setTitle("Submit This Artwork?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new SubmitArtWork().execute(String.valueOf(artists.get(position).id), String.valueOf(artists.get(position).artist_id), String.valueOf(galleryId));
+                    }
+                })
+                .setNegativeButton("No", null)
+                .setView(imageView)
+                .create();
+        alertDialog.show();
+    }
+
     private class DeleteArtWork extends AsyncTask <String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... params) {
             try {
                 ApiHelper.deleteArt(params[0]);
+                alertDialog.dismiss();
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -114,6 +166,28 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
                     }
                 });
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private class SubmitArtWork extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                final String status = ApiHelper.submitArt(params[0], params[1], params[2]);
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, status, Toast.LENGTH_SHORT).show();
+                        refreshableActivity.refresh();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
             return null;
