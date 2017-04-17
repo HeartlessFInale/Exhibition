@@ -216,6 +216,20 @@ def addSubmission():
         return jsonify(error)
 
 
+@app.route('/addArtTrait')
+def addArtTrait():
+    try:
+        art_id = request.args['art_id']
+        trait = request.args['trait']
+
+        result = SQLConnection.addArtTrait(art_id, trait)
+
+        return jsonify(result)
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000)
 
