@@ -57,7 +57,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements Refresha
         bio = (TextView) findViewById(R.id.bio);
         name = (TextView) findViewById(R.id.name);
         artRecyclerView = (RecyclerView) findViewById(R.id.artRecyclerView);
-        artAdapter = new ArtAdapter(this, arts, this);
+        artAdapter = new ArtAdapter(this, arts, ArtAdapter.ACTION_DELETE);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         artRecyclerView.setLayoutManager(layoutManager);
         artRecyclerView.setAdapter(artAdapter);

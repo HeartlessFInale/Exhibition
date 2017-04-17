@@ -12,10 +12,11 @@ public class Art {
 
     public Art() {}
 
-    public Art(int id, String description, String name, String picture) {
+    public Art(int id, String description, String name, String picture, int artist_id) {
         this.id = id;
         this.description = description;
         this.name = name;
         this.picture = picture;
+        this.artist_id = artist_id;
     }
 }

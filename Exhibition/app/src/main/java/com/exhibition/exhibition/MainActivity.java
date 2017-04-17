@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                galleries.addAll(ApiHelper.getGalleries());
+                galleries.addAll(ApiHelper.getGalleries(1));
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

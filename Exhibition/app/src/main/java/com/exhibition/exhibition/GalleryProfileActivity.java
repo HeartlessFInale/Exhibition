@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -69,7 +70,7 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
 //            artists.add(new Artist());
 //        }
         artistAdapter = new ArtistAdapter(this, artists);
-        artAdapter = new ArtAdapter(this, arts);
+        artAdapter = new ArtAdapter(this, arts, ArtAdapter.ACTION_VIEW);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         artistRecyclerView.setLayoutManager(layoutManager);
@@ -97,7 +98,7 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                galleryDetails = ApiHelper.getGalleryDetails(gallery.id);
+                galleryDetails = ApiHelper.getGalleryDetails(gallery.id, 1);
                 gallery = galleryDetails.gallery;
                 artists.addAll(galleryDetails.artists);
                 arts.addAll(galleryDetails.arts);
@@ -150,15 +151,18 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
     private void submitArtwork() {
         View view = View.inflate(this, R.layout.choose_arts, null);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        ArtAdapter artAdapter2 = new ArtAdapter(this, artistDetails.arts);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        ArtAdapter artAdapter2 = new ArtAdapter(this, artistDetails.arts, ArtAdapter.ACTION_SUBMIT);
+        artAdapter2.setGalleryId(gallery.id);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(artAdapter2);
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle("Which would you like to submit?")
                 .setView(view)
-                .create()
-                .show();
+                .create();
+        artAdapter2.setAlertDialog(alertDialog);
+        alertDialog.show();
     }
 
     private class GetMyArts extends AsyncTask<Void, Void, Void> {
