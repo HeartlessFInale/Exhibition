@@ -189,3 +189,22 @@ def addSubmission(art_id, artist_id, gallery_id):
     except Exception as e:
         print e
         return e.message
+
+
+def addArtTrait(art_id, trait):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_addArtTrait', (art_id, trait))
+
+        conn.commit()
+
+        result = cursor.fetchone()
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message

@@ -34,7 +34,7 @@ CREATE TABLE `art` (
   PRIMARY KEY (`art_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `art_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `art` (
 
 LOCK TABLES `art` WRITE;
 /*!40000 ALTER TABLE `art` DISABLE KEYS */;
-INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg',''),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg','\0'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg',''),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg','\0'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg',''),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg',''),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg','\0'),(16,'Fall leaves','description',1,'2017-04-10-23-36-49-2054567525_1491951149.jpg','');
+INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg','\0'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg','\0'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg',''),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg','\0'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg',''),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg',''),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg','\0'),(16,'Fall leaves','description',1,'2017-04-10-23-36-49-2054567525_1491951149.jpg',''),(17,'Night Time','Night Time',1,'2017-04-10-23-34-47--47576534_1492375905.jpg','\0');
 /*!40000 ALTER TABLE `art` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,7 +58,7 @@ CREATE TABLE `art_traits` (
   `art_id` int(11) NOT NULL,
   `trait` varchar(128) NOT NULL,
   KEY `art_id` (`art_id`),
-  CONSTRAINT `art_traits_ibfk_1` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`)
+  CONSTRAINT `art_traits_ibfk_1` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -68,6 +68,7 @@ CREATE TABLE `art_traits` (
 
 LOCK TABLES `art_traits` WRITE;
 /*!40000 ALTER TABLE `art_traits` DISABLE KEYS */;
+INSERT INTO `art_traits` VALUES (1,'Test Trait'),(1,'Test Trait'),(1,'Blah Blah');
 /*!40000 ALTER TABLE `art_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -278,7 +279,7 @@ CREATE TABLE `submissions` (
   CONSTRAINT `art_id` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `artist_id` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `gallery_id` FOREIGN KEY (`gallery_id`) REFERENCES `gallery` (`gallery_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -287,7 +288,7 @@ CREATE TABLE `submissions` (
 
 LOCK TABLES `submissions` WRITE;
 /*!40000 ALTER TABLE `submissions` DISABLE KEYS */;
-INSERT INTO `submissions` VALUES (1,15,1,1,'','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20');
+INSERT INTO `submissions` VALUES (1,15,1,1,'','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20'),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32');
 /*!40000 ALTER TABLE `submissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -305,8 +306,9 @@ UNLOCK TABLES;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addArtTrait`(
-	IN p_trait int,
-    IN p_art_id int
+	IN p_art_id int,
+    IN p_trait varchar(1024)
+    
 )
 BEGIN
 	INSERT INTO `exhibition`.`art_traits`
@@ -315,6 +317,8 @@ BEGIN
 	VALUES
 	(p_art_id,
 	p_trait);
+    
+    SELECT '1' as 'return_code','Trait Added Successfully' as 'status';
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -433,10 +437,12 @@ BEGIN
     FROM artist 
     where artist_id = p_artist_id;
     
-    SELECT * 
-    FROM art
-    where artist_id  = p_artist_id
-    and is_deleted != 1;
+    SELECT *
+    FROM art a
+    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits',art_id FROM art_traits GROUP BY art_id) at
+    ON a.art_id = at.art_id
+    where a.artist_id  = p_artist_id
+    and a.is_deleted != 1;
     
     
 END ;;
@@ -476,10 +482,12 @@ BEGIN
     WHERE gallery_id = p_gallery_id;
     
     /* QUERY TO FETCH ARTWORK EXHIBITED BY GALLERY */
-    SELECT a.art_id, a.name, a.description, a.picture 
+    SELECT a.art_id, a.name, a.description, a.picture,at.traits 
     FROM art a
     JOIN gallery_art ga
     ON a.art_id = ga.art_id
+    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits',art_id FROM art_traits GROUP BY art_id) at
+    ON a.art_id = at.art_id
     WHERE ga.gallery_id = p_gallery_id AND a.is_deleted != 1;
     
     
@@ -626,4 +634,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-16 16:22:32
+-- Dump completed on 2017-04-17  1:20:10
