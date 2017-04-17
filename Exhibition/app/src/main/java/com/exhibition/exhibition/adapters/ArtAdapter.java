@@ -3,6 +3,7 @@ package com.exhibition.exhibition.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.exhibition.exhibition.ApiHelper;
+import com.exhibition.exhibition.ArtDetailActivity;
 import com.exhibition.exhibition.R;
 import com.exhibition.exhibition.models.Art;
 import com.exhibition.exhibition.models.RefreshableActivity;
@@ -90,7 +92,10 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
                 (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(context, "Art Page coming soon!", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "Art Page coming soon!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, ArtDetailActivity.class);
+                        intent.putExtra("art", artists.get(getAdapterPosition()));
+                        context.startActivity(intent);
                     }
                 });
             } else {
@@ -172,7 +177,7 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
         @Override
         protected Void doInBackground(String... params) {
             try {
-                final String status = ApiHelper.submitArt(context, params[0], params[1], params[2]);
+                final String status = ApiHelper.submitArt(params[0], params[1], params[2]);
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

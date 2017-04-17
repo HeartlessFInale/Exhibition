@@ -27,7 +27,7 @@ import okhttp3.Response;
  */
 
 public class ApiHelper {
-    public static final String URL = "http://1535b42c.ngrok.io/";
+    public static final String URL = "http://28a4e3d9.ngrok.io/";
     public static final String IMAGES = "images/";
 
     private static String getGalleryList(int id) throws IOException {
@@ -88,6 +88,20 @@ public class ApiHelper {
         return artistDetails;
     }
 
+    public static void getArtDetails(int id) throws IOException, JSONException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"getArtDetail?art_id=" + id)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper: getArtDs", s);
+//        JSONObject jsonObject = new JSONObject(s);
+//        ArtistDetails artistDetails = new ArtistDetails(convertJSONObjectToArtist(jsonObject.getJSONObject("artist_detail")));
+//        artistDetails.arts.addAll(convertJSONArrayToArt(jsonObject.getJSONArray("artworks"), id));
+//        return artistDetails;
+    }
+
     private static Artist convertJSONObjectToArtist(JSONObject jsonObject) throws JSONException {
         return new Artist(jsonObject.getString("name"), jsonObject.getInt("artist_id"), jsonObject.getString("picture"), jsonObject.getString("description"));
     }
@@ -128,7 +142,8 @@ public class ApiHelper {
             String picture = jsonObject.getString("picture");
             String description = jsonObject.getString("description");
             int id = jsonObject.getInt("art_id");
-            arts.add(new Art(id, description, name, picture, artist_id));
+            String traits = jsonObject.getString("traits");
+            arts.add(new Art(id, description, name, picture, artist_id, traits));
         }
         return arts;
     }
@@ -143,7 +158,7 @@ public class ApiHelper {
         Log.d("ApiHelper: deleteArt", s);
     }
 
-    public static String submitArt(Context context, String artId, String artistId, String galleryId) throws IOException, JSONException {
+    public static String submitArt(String artId, String artistId, String galleryId) throws IOException, JSONException {
         Log.d("ApiHelper: submitArt1", artId + " " + artistId + " " + galleryId);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
@@ -154,6 +169,20 @@ public class ApiHelper {
         Log.d("ApiHelper: submitArt2", s);
         JSONObject jsonObject = new JSONObject(s);
         String s2 = jsonObject.getString("return_status");
+        return s2;
+    }
+
+    public static String addTrait(String artId, String trait) throws IOException, JSONException {
+        Log.d("ApiHelper: addTrait1", artId + " " + trait);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"addArtTrait?art_id=" + artId + "&trait=" + trait)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper: addTrait2", s);
+        JSONObject jsonObject = new JSONObject(s);
+        String s2 = jsonObject.getString("status");
         return s2;
     }
 }
