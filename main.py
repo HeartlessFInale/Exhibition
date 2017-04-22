@@ -1,4 +1,4 @@
-from flask import Flask, send_file, request, send_from_directory, url_for, redirect, jsonify,render_template
+from flask import Flask, send_file, request, send_from_directory, url_for, redirect, jsonify, render_template
 import io
 import os
 import base64
@@ -65,7 +65,8 @@ def addNewGallery():
         latit = request.args['latit']
         longit = request.args['longit']
 
-        result = SQLConnection.add_new_gallery(gallery_name, year, desc, photoBlob, latit, longit)
+        result = SQLConnection.add_new_gallery(
+            gallery_name, year, desc, photoBlob, latit, longit)
 
         return jsonify(result)
 
@@ -113,24 +114,24 @@ def addNewArtist():
         file_name_arr = file_name.split('.')
         curr_time = int(time.time())
 
-        new_file_name = '{}_{}.{}'.format(file_name_arr[0], curr_time, file_name_arr[-1])
+        new_file_name = '{}_{}.{}'.format(
+            file_name_arr[0], curr_time, file_name_arr[-1])
 
         f = open('UPLOADS/' + new_file_name, 'wb')
         f.write(img_bytes)
         f.close()
 
-        result = SQLConnection.add_new_artist(artist_name, description, new_file_name)
+        result = SQLConnection.add_new_artist(
+            artist_name, description, new_file_name)
 
         return jsonify(result)
-
-
 
     except Exception as e:
         error = 'Internal Server Error: {}'.format(e.message)
         return jsonify(error)
 
 
-@app.route('/uploadArtwork',methods = ['POST'])
+@app.route('/uploadArtwork', methods=['POST'])
 def uploadArtwork():
     try:
         data = request.data
@@ -160,16 +161,17 @@ def uploadArtwork():
         file_name_arr = file_name.split('.')
         curr_time = int(time.time())
 
-        new_file_name = '{}_{}.{}'.format(file_name_arr[0], curr_time, file_name_arr[-1])
+        new_file_name = '{}_{}.{}'.format(
+            file_name_arr[0], curr_time, file_name_arr[-1])
 
         f = open('UPLOADS/' + new_file_name, 'wb')
         f.write(img_bytes)
         f.close()
 
-        result = SQLConnection.upload_artwork(art_name, description, artist_id, new_file_name, gallery_id)
+        result = SQLConnection.upload_artwork(
+            art_name, description, artist_id, new_file_name, gallery_id)
 
         return jsonify('Successfully Uploaded Art')
-
 
     except Exception as e:
         error = 'Internal Server Error: {}'.format(e.message)
@@ -230,7 +232,18 @@ def addArtTrait():
         return jsonify(error)
 
 
+@app.route('/search')
+def search():
+    try:
+        search_term = request.args['search_term']
+        artist_id = request.args['artist_id']
+
+        result = SQLConnection.search(search_term, artist_id)
+
+        return jsonify(result)
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000)
-
-

@@ -208,3 +208,33 @@ def addArtTrait(art_id, trait):
     except Exception as e:
         print e
         return e.message
+
+
+def search(search_term,artist_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_search', (search_term,artist_id))
+
+        result = {'gallery_list':[], 'artist_list':[], 'art_list': []}
+
+        result_headers = ['gallery_list', 'artist_list', 'art_list']
+
+        for header in result_headers:
+            if len(cursor._rows) == 1:
+                rows_set = cursor._rows[0]
+            else:
+                rows_set = cursor._rows
+
+            result[header] = rows_set
+            cursor.nextset()
+
+        CloseConnection(conn)
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
