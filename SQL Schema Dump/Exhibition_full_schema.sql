@@ -34,7 +34,7 @@ CREATE TABLE `art` (
   PRIMARY KEY (`art_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `art_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `art` (
 
 LOCK TABLES `art` WRITE;
 /*!40000 ALTER TABLE `art` DISABLE KEYS */;
-INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg','\0'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg','\0'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg',''),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg','\0'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg',''),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg',''),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg','\0'),(16,'Fall leaves','description',1,'2017-04-10-23-36-49-2054567525_1491951149.jpg',''),(17,'Night Time','Night Time',1,'2017-04-10-23-34-47--47576534_1492375905.jpg','\0');
+INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg','\0'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg','\0'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg',''),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg','\0'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg',''),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg',''),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg','\0'),(16,'Fall leaves','description',1,'2017-04-10-23-36-49-2054567525_1491951149.jpg',''),(17,'Night Time','Night Time',1,'2017-04-10-23-34-47--47576534_1492375905.jpg',''),(18,'hi','hi',1,'2017-04-10-23-36-49-2054567525_1492555052.jpg',''),(19,'Blue sky','test',1,'2017-04-10-23-34-47--47576534_1492560480.jpg','\0'),(20,'fall','desc',1,'2017-04-10-23-36-49-2054567525_1492560689.jpg','\0');
 /*!40000 ALTER TABLE `art` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,7 +68,7 @@ CREATE TABLE `art_traits` (
 
 LOCK TABLES `art_traits` WRITE;
 /*!40000 ALTER TABLE `art_traits` DISABLE KEYS */;
-INSERT INTO `art_traits` VALUES (1,'Test Trait'),(1,'Test Trait'),(1,'Blah Blah');
+INSERT INTO `art_traits` VALUES (1,'Test Trait'),(1,'Test Trait'),(1,'Blah Blah'),(4,'good'),(4,''),(4,''),(4,''),(4,''),(1,''),(1,'');
 /*!40000 ALTER TABLE `art_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,7 +279,7 @@ CREATE TABLE `submissions` (
   CONSTRAINT `art_id` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `artist_id` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `gallery_id` FOREIGN KEY (`gallery_id`) REFERENCES `gallery` (`gallery_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,7 +288,7 @@ CREATE TABLE `submissions` (
 
 LOCK TABLES `submissions` WRITE;
 /*!40000 ALTER TABLE `submissions` DISABLE KEYS */;
-INSERT INTO `submissions` VALUES (1,15,1,1,'','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20'),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32');
+INSERT INTO `submissions` VALUES (1,15,1,1,'','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20'),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32'),(9,18,1,1,'','2017-04-18 18:37:43','2017-04-18 18:37:43'),(10,20,1,1,'','2017-04-18 20:12:15','2017-04-18 20:12:15');
 /*!40000 ALTER TABLE `submissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -511,7 +511,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getGalleryList`(
 	IN p_artist_id INT
 )
 BEGIN
-	SELECT ga.gallery_id,ga.name,ga.photo,ga.description,ga.latitude,ga.longitude, IF(fav.gallery_id is NOT NULL, TRUE,FALSE) as 'is_fav' 
+	SELECT ga.gallery_id,ga.name,ga.photo,ga.description,ga.latitude,ga.longitude, IF((fav.gallery_id is NOT NULL )AND (fav.artist_id = p_artist_id), TRUE,FALSE) as 'is_fav' 
     FROM gallery ga
     LEFT JOIN favorite_gallery fav
     ON ga.gallery_id = fav.gallery_id;
@@ -583,6 +583,45 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_search` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_search`(
+	IN p_search_term varchar(256),
+    IN p_artist_id INT
+)
+BEGIN
+	SELECT ga.gallery_id,ga.name,ga.photo,ga.description,ga.latitude,ga.longitude, 
+    IF((fav.gallery_id is NOT NULL )AND (fav.artist_id = p_artist_id), TRUE,FALSE) as 'is_fav' 
+    FROM gallery ga
+    LEFT JOIN favorite_gallery fav
+    ON ga.gallery_id = fav.gallery_id 
+    WHERE ga.name LIKE CONCAT(p_search_term,'%');
+    
+	SELECT * 
+    FROM artist
+    where name like CONCAT(p_search_term,'%');
+    
+    SELECT a.art_id, a.name, a.description, a.picture,at.traits 
+    FROM art a
+    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits',art_id FROM art_traits GROUP BY art_id) at
+    ON a.art_id = at.art_id
+    WHERE a.is_deleted != 1 AND a.name LIKE CONCAT(p_search_term,'%');
+    
+    
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_uploadArt` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -634,4 +673,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-17  1:20:10
+-- Dump completed on 2017-04-22 12:52:58
