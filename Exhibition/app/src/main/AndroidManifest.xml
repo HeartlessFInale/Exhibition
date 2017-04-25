@@ -24,7 +24,11 @@
         <activity android:name=".GalleryProfileActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".UploadImageActivity" />
-        <activity android:name=".ArtDetailActivity"></activity>
+        <activity android:name=".ArtDetailActivity" />
+        <activity android:name=".SearchActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
