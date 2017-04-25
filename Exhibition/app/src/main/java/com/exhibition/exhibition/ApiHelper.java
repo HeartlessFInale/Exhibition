@@ -5,10 +5,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.exhibition.exhibition.models.Art;
+import com.exhibition.exhibition.models.ArtResult;
 import com.exhibition.exhibition.models.Artist;
 import com.exhibition.exhibition.models.ArtistDetails;
+import com.exhibition.exhibition.models.ArtistResult;
 import com.exhibition.exhibition.models.Gallery;
 import com.exhibition.exhibition.models.GalleryDetails;
+import com.exhibition.exhibition.models.GalleryResult;
+import com.exhibition.exhibition.models.SearchResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +31,7 @@ import okhttp3.Response;
  */
 
 public class ApiHelper {
-    public static final String URL = "http://28a4e3d9.ngrok.io/";
+    public static final String URL = "http://1f57b354.ngrok.io/";
     public static final String IMAGES = "images/";
 
     private static String getGalleryList(int id) throws IOException {
@@ -185,4 +189,86 @@ public class ApiHelper {
         String s2 = jsonObject.getString("status");
         return s2;
     }
+    ///search?search_term=Blue&artist_id=1
+
+    public static List<SearchResult> search(String artistId, String query) throws IOException, JSONException {
+        Log.d("ApiHelper: search1", artistId + " " + query);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"search?search_term=" + query + "&artist_id=" + artistId)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper: search2", s);
+        JSONObject jsonObject = new JSONObject(s);
+        List<SearchResult> searchResults = new ArrayList<>();
+        try {
+            ArtResult artResult = new ArtResult(convertJSONArrayToArtResult(jsonObject.getJSONArray("art_list")), SearchResult.Type.ART);
+            searchResults.add(artResult);
+        } catch (JSONException e) {
+            List<Art> arts = new ArrayList<>();
+            arts.add(convertJSONObjectToArtResult(jsonObject.getJSONObject("art_list")));
+            ArtResult artResult = new ArtResult(arts, SearchResult.Type.ART);
+            searchResults.add(artResult);
+        }
+        try {
+            ArtistResult artistResult = new ArtistResult(convertJSONArrayToArtistResult(jsonObject.getJSONArray("artist_list")), SearchResult.Type.ARTIST);
+            searchResults.add(artistResult);
+        } catch (JSONException e) {
+            List<Artist> artists = new ArrayList<>();
+            artists.add(convertJSONObjectToArtistResult(jsonObject.getJSONObject("artist_list")));
+            ArtistResult artistResult = new ArtistResult(artists, SearchResult.Type.ARTIST);
+            searchResults.add(artistResult);
+        }
+        try {
+            GalleryResult galleryResult = new GalleryResult(convertJSONArrayToGalleryResult(jsonObject.getJSONArray("gallery_list")), SearchResult.Type.GALLERY);
+            searchResults.add(galleryResult);
+        } catch (JSONException e) {
+            List<Gallery> galleries = new ArrayList<>();
+            galleries.add(convertJSONObjectToGalleryResult(jsonObject.getJSONObject("gallery_list")));
+            GalleryResult galleryResult = new GalleryResult(galleries, SearchResult.Type.GALLERY);
+            searchResults.add(galleryResult);
+        }
+        return searchResults;
+    }
+
+    private static Gallery convertJSONObjectToGalleryResult(JSONObject jsonObject) throws JSONException {
+        return new Gallery(jsonObject.getString("name"), jsonObject.getString("description"), jsonObject.getInt("gallery_id"), jsonObject.getInt("is_fav"), jsonObject.getString("photo"));
+    }
+
+    private static Artist convertJSONObjectToArtistResult(JSONObject jsonObject) throws JSONException {
+        return new Artist(jsonObject.getString("name"), jsonObject.getInt("artist_id"), jsonObject.getString("picture"), jsonObject.getString("description"));
+    }
+
+    private static Art convertJSONObjectToArtResult(JSONObject jsonObject) throws JSONException {
+        return new Art(jsonObject.getInt("art_id"), jsonObject.getString("description"), jsonObject.getString("name"), jsonObject.getString("picture"), 1, jsonObject.getString("traits"));
+    }
+
+    private static List<Art> convertJSONArrayToArtResult(JSONArray artList) throws JSONException {
+        List<Art> arts = new ArrayList<>();
+        for (int i = 0; i < artList.length(); i++) {
+            JSONObject jsonObject = artList.getJSONObject(i);
+            arts.add(new Art(jsonObject.getInt("art_id"), jsonObject.getString("description"), jsonObject.getString("name"), jsonObject.getString("picture"), 1, jsonObject.getString("traits")));
+        }
+        return arts;
+    }
+
+    private static List<Artist> convertJSONArrayToArtistResult(JSONArray artistList) throws JSONException {
+        List<Artist> artists = new ArrayList<>();
+        for (int i = 0; i < artistList.length(); i++) {
+            JSONObject jsonObject = artistList.getJSONObject(i);
+            artists.add(new Artist(jsonObject.getString("name"), jsonObject.getInt("artist_id"), jsonObject.getString("picture"), jsonObject.getString("description")));
+        }
+        return artists;
+    }
+
+    private static List<Gallery> convertJSONArrayToGalleryResult(JSONArray galleryList) throws JSONException {
+        List<Gallery> galleries = new ArrayList<>();
+        for (int i = 0; i < galleryList.length(); i++) {
+            JSONObject jsonObject = galleryList.getJSONObject(i);
+            galleries.add(new Gallery(jsonObject.getString("name"), jsonObject.getString("description"), jsonObject.getInt("gallery_id"), jsonObject.getInt("is_fav"), jsonObject.getString("photo")));
+        }
+        return galleries;
+    }
+
 }
