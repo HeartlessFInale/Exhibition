@@ -232,6 +232,38 @@ def addArtTrait():
         return jsonify(error)
 
 
+
+@app.route('/addArtistTrait')
+def addArtistTrait():
+    try:
+        artist_id = request.args['artist_id']
+        trait = request.args['trait']
+
+        result = SQLConnection.addArtistTrait(artist_id, trait)
+
+        return jsonify(result)
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route('/addGalleryTrait')
+def addGalleryTrait():
+    try:
+        gallery_id = request.args['gallery_id']
+        trait = request.args['trait']
+
+        result = SQLConnection.addGalleryTrait(gallery_id, trait)
+
+        return jsonify(result)
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+
+
+
 @app.route('/search')
 def search():
     try:
@@ -244,6 +276,21 @@ def search():
     except Exception as e:
         error = 'Internal Server Error: {}'.format(e.message)
         return jsonify(error)
+
+
+@app.route('/searchTrait')
+def searchTrait():
+    try:
+        search_term = request.args['search_term']
+
+        result = SQLConnection.searchTrait(search_term)
+
+        return jsonify(result)
+        
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
 
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000)
