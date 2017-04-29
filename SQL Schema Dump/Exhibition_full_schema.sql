@@ -109,7 +109,8 @@ DROP TABLE IF EXISTS `artist_traits`;
 CREATE TABLE `artist_traits` (
   `artist_id` int(11) NOT NULL,
   `trait` varchar(128) NOT NULL,
-  KEY `artist_id` (`artist_id`)
+  KEY `artist_id` (`artist_id`),
+  CONSTRAINT `artist_traits` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -119,7 +120,6 @@ CREATE TABLE `artist_traits` (
 
 LOCK TABLES `artist_traits` WRITE;
 /*!40000 ALTER TABLE `artist_traits` DISABLE KEYS */;
-INSERT INTO `artist_traits` VALUES (1,'Test Trait'),(1,'Contemporary');
 /*!40000 ALTER TABLE `artist_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -884,4 +884,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-29 11:53:18
+-- Dump completed on 2017-04-29 12:13:55
