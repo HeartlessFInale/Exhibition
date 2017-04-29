@@ -210,6 +210,45 @@ def addArtTrait(art_id, trait):
         return e.message
 
 
+def addArtistTrait(artist_id, trait):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_addArtistTrait', (artist_id, trait))
+
+        conn.commit()
+
+        result = cursor.fetchone()
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
+
+
+def addGalleryTrait(gallery_id, trait):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_addGalleryTrait', (gallery_id, trait))
+
+        conn.commit()
+
+        result = cursor.fetchone()
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
+
+
+
 def search(search_term,artist_id):
     try:
         conn = CreateConnection()
@@ -235,6 +274,38 @@ def search(search_term,artist_id):
 
         return result
 
+    except Exception as e:
+        print e
+        return e.message
+
+
+
+def searchTrait(search_term):
+    try:
+
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        result = {'gallery_list': [], 'artist_list': [], 'art_list': []}
+
+        result_headers = ['gallery_list', 'artist_list', 'art_list']
+
+        cursor.callproc('sp_searchTraitGallery', (search_term,))
+
+        result['gallery_list'] = cursor.fetchall()
+
+        cursor.callproc('sp_searchTraitArtist', (search_term,))
+
+        result['artist_list'] = cursor.fetchall()
+
+        cursor.callproc('sp_searchTraitArt', (search_term,))
+
+        result['art_list'] = cursor.fetchall()
+
+        CloseConnection(conn)
+
+        return result
     except Exception as e:
         print e
         return e.message
