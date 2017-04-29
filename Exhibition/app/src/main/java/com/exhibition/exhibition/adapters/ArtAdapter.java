@@ -158,7 +158,7 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
         protected Void doInBackground(String... params) {
             try {
                 ApiHelper.deleteArt(params[0]);
-                alertDialog.dismiss();
+//                alertDialog.dismiss();
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

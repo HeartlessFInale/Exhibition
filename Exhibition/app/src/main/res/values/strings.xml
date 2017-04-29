@@ -2,4 +2,8 @@
     <string name="app_name">Exhibition</string>
     <string name="action_submit">Submit Artwork</string>
     <string name="select_picture">Select Picture</string>
+    <string name="action_search">Search</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -38,8 +38,8 @@ public class ArtDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (editText.getText().toString().trim().length() != 0) {
                     traitsTxt += editText.getText().toString() + ", ";
-                    editText.setText("");
                     new AddTrait().execute(String.valueOf(art.id), editText.getText().toString());
+                    editText.setText("");
                 } else {
                     Toast.makeText(ArtDetailActivity.this, "Invalid trait", Toast.LENGTH_SHORT).show();
                 }

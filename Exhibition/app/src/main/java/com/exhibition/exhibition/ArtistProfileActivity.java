@@ -73,7 +73,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements Refresha
     public void refresh() {
         arts.clear();
         new GetArtistDetail().execute();
-        progressDialog.show();
+//        progressDialog.show();
     }
 
     private class GetArtistDetail extends AsyncTask<Void, Void, Void> {
