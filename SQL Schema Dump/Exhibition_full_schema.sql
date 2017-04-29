@@ -68,7 +68,7 @@ CREATE TABLE `art_traits` (
 
 LOCK TABLES `art_traits` WRITE;
 /*!40000 ALTER TABLE `art_traits` DISABLE KEYS */;
-INSERT INTO `art_traits` VALUES (1,'Test Trait'),(1,'Test Trait'),(1,'Blah Blah'),(4,'good'),(4,''),(4,''),(4,''),(4,''),(1,''),(1,'');
+INSERT INTO `art_traits` VALUES (1,'Test');
 /*!40000 ALTER TABLE `art_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,6 +120,7 @@ CREATE TABLE `artist_traits` (
 
 LOCK TABLES `artist_traits` WRITE;
 /*!40000 ALTER TABLE `artist_traits` DISABLE KEYS */;
+INSERT INTO `artist_traits` VALUES (1,'Contemporary');
 /*!40000 ALTER TABLE `artist_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -254,6 +255,7 @@ CREATE TABLE `gallery_traits` (
 
 LOCK TABLES `gallery_traits` WRITE;
 /*!40000 ALTER TABLE `gallery_traits` DISABLE KEYS */;
+INSERT INTO `gallery_traits` VALUES (1,'SoHo');
 /*!40000 ALTER TABLE `gallery_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -295,6 +297,40 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'exhibition'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `sp_addArtistTrait` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addArtistTrait`(
+	IN p_artist_id INT,
+    IN p_trait_name varchar(256)
+)
+BEGIN
+	IF EXISTS (SELECT 1 FROM artist_traits where artist_id = p_artist_id and lower(trait) = lower(p_trait_name))
+    THEN
+    BEGIN
+		select -1 as return_code, 'Trait already exists' as status ;
+    END ;
+    ELSE
+		INSERT INTO `exhibition`.`artist_traits`
+		(`artist_id`,`trait`)
+		VALUES
+		(p_artist_id,p_trait_name);
+        
+        SELECT 1 as return_code,'Trait Added Successfully' as status;
+	END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_addArtTrait` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -308,68 +344,21 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addArtTrait`(
 	IN p_art_id int,
     IN p_trait varchar(1024)
-    
 )
 BEGIN
-	INSERT INTO `exhibition`.`art_traits`
-	(`art_id`,
-	`trait`)
-	VALUES
-	(p_art_id,
-	p_trait);
-    
-    SELECT '1' as 'return_code','Trait Added Successfully' as 'status';
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_addGalleryTrait` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addGalleryTrait`(
-	IN p_gallery_id int,
-    IN p_trait varchar(1024)
-    
-)
-BEGIN
-	INSERT INTO `exhibition`.`gallery_traits`
-	(`gallery_id`,
-	`trait`)
-	VALUES
-	(p_gallery_id,
-	p_trait);
-    
-    SELECT '1' as 'return_code','Trait Added Successfully' as 'status';
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_grabArtistTrait` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_grabArtistTrait`(
-	IN p_artist_id int
-)
-BEGIN
-    SELECT art_traits.trait FROM art_traits, art, artist WHERE art_traits.art_id = art.art_id AND art.artist_id = artist.artist_id AND artist.artist_id = p_artist_id;
+	IF EXISTS (SELECT 1 FROM art_traits where art_id = p_art_id and lower(trait) = lower(p_trait))
+    THEN
+    BEGIN
+		select -1 as return_code, 'Trait already exists' as status ;
+    END ;
+    ELSE
+		INSERT INTO `exhibition`.`art_traits`
+		(`art_id`,	`trait`)
+		VALUES
+		(p_art_id,	p_trait);
+		
+		SELECT '1' as 'return_code','Trait Added Successfully' as 'status';
+	END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -404,7 +393,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_dropFavoriteGallery` */;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_addGalleryTrait` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -414,14 +403,25 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_dropFavoriteGallery`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addGalleryTrait`(
 	IN p_gallery_id int,
-    IN p_artist_id int
+    IN p_trait varchar(256)
+    
 )
 BEGIN
-	DELETE FROM `exhibition`.`favorite_gallery`
-	WHERE `exhibition`.`gallery_id` = p_gallery_id
-	AND `exhibition`.`artist_id` = p_artist_id;
+	IF EXISTS (SELECT 1 FROM gallery_traits where gallery_id = p_gallery_id and lower(trait) = lower(p_trait))
+    THEN
+    BEGIN
+		select -1 as return_code, 'Trait already exists' as status ;
+    END ;
+    ELSE
+		INSERT INTO `exhibition`.`gallery_traits`
+		(`gallery_id`,`trait`)
+		VALUES
+		(p_gallery_id, p_trait);
+        
+        SELECT 1 as return_code,'Trait Added Successfully' as status;
+	END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -488,6 +488,96 @@ BEGIN
 	UPDATE art
     SET is_deleted = True
     WHERE art_id = p_art_id; 
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_deleteArtistTrait` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteArtistTrait`(
+	IN traitName varchar(128),
+	IN artistId INT(128)
+)
+BEGIN
+	DELETE FROM `artist_traits` WHERE `trait` = traitName && `artist_id` = artistId;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_deleteArtTrait` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteArtTrait`(
+	IN traitName varchar(128),
+	IN artId INT(128)
+)
+BEGIN
+	DELETE FROM `art_traits` WHERE `trait` = traitName && `art_id` = artId;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_deleteGalleryTrait` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteGalleryTrait`(
+	IN traitName varchar(128),
+	IN galleryId INT(128)
+)
+BEGIN
+	DELETE FROM `gallery_traits` WHERE `trait` = traitName && `gallery_id` = galleryId;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_dropFavoriteGallery` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_dropFavoriteGallery`(
+	IN p_gallery_id int,
+    IN p_artist_id int
+)
+BEGIN
+	DELETE FROM `exhibition`.`favorite_gallery`
+	WHERE `exhibition`.`gallery_id` = p_gallery_id
+	AND `exhibition`.`artist_id` = p_artist_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -590,6 +680,27 @@ BEGIN
     FROM gallery ga
     LEFT JOIN favorite_gallery fav
     ON ga.gallery_id = fav.gallery_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_grabArtistTrait` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_grabArtistTrait`(
+	IN p_artist_id int
+)
+BEGIN
+    SELECT art_traits.trait FROM art_traits, art, artist WHERE art_traits.art_id = art.art_id AND art.artist_id = artist.artist_id AND artist.artist_id = p_artist_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -713,7 +824,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_searchTraitArt`(
 BEGIN
 	SELECT * 
 	FROM `art`, `art_traits` 
-	WHERE `art`.`art_id` = `art_traits`.`art_id` AND `art_traits`.`trait` LIKE traitName;
+	WHERE `art`.`art_id` = `art_traits`.`art_id` AND `art_traits`.`trait` LIKE CONCAT(traitName,'%');
 
 END ;;
 DELIMITER ;
@@ -737,7 +848,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_searchTraitArtist`(
 BEGIN
 	SELECT * 
 	FROM `artist`, `artist_traits` 
-	WHERE `artist`.`artist_id` = `artist_traits`.`artist_id` AND `artist_traits`.`trait` LIKE traitName;
+	WHERE `artist`.`artist_id` = `artist_traits`.`artist_id` AND `artist_traits`.`trait` LIKE CONCAT(traitName,'%');
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -760,51 +871,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_searchTraitGallery`(
 BEGIN
 	SELECT * 
 	FROM `gallery`, `gallery_traits` 
-	WHERE `gallery`.`gallery_id` = `gallery_traits`.`gallery_id` AND `gallery_traits`.`trait` LIKE traitName;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_deleteGalleryTrait` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteGalleryTrait`(
-	IN traitName varchar(128),
-	IN galleryId INT(128)
-)
-BEGIN
-	DELETE FROM `gallery_traits` WHERE `trait` = traitName && `gallery_id` = galleryId;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_deleteArtTrait` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteArtTrait`(
-	IN traitName varchar(128),
-	IN artId INT(128)
-)
-BEGIN
-	DELETE FROM `art_traits` WHERE `trait` = traitName && `art_id` = artId;
+	WHERE `gallery`.`gallery_id` = `gallery_traits`.`gallery_id` AND `gallery_traits`.`trait` LIKE CONCAT(traitName,'%');
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -862,4 +929,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-22 12:52:58
+-- Dump completed on 2017-04-29 12:44:29
