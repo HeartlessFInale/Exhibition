@@ -55,11 +55,13 @@ DROP TABLE IF EXISTS `art_traits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `art_traits` (
+  `trait_id` int(11) NOT NULL AUTO_INCREMENT,
   `art_id` int(11) NOT NULL,
   `trait` varchar(128) NOT NULL,
+  PRIMARY KEY (`trait_id`),
   KEY `art_id` (`art_id`),
   CONSTRAINT `art_traits_ibfk_1` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +70,7 @@ CREATE TABLE `art_traits` (
 
 LOCK TABLES `art_traits` WRITE;
 /*!40000 ALTER TABLE `art_traits` DISABLE KEYS */;
-INSERT INTO `art_traits` VALUES (1,'Test');
+INSERT INTO `art_traits` VALUES (1,1,'Test');
 /*!40000 ALTER TABLE `art_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,11 +109,13 @@ DROP TABLE IF EXISTS `artist_traits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `artist_traits` (
+  `trait_id` int(11) NOT NULL AUTO_INCREMENT,
   `artist_id` int(11) NOT NULL,
   `trait` varchar(128) NOT NULL,
+  PRIMARY KEY (`trait_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `artist_traits_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +124,6 @@ CREATE TABLE `artist_traits` (
 
 LOCK TABLES `artist_traits` WRITE;
 /*!40000 ALTER TABLE `artist_traits` DISABLE KEYS */;
-INSERT INTO `artist_traits` VALUES (1,'Contemporary');
 /*!40000 ALTER TABLE `artist_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,11 +245,13 @@ DROP TABLE IF EXISTS `gallery_traits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gallery_traits` (
+  `trait_id` int(11) NOT NULL AUTO_INCREMENT,
   `gallery_id` int(128) NOT NULL,
   `trait` varchar(128) NOT NULL,
+  PRIMARY KEY (`trait_id`),
   KEY `gallery_id` (`gallery_id`),
   CONSTRAINT `gallery_traits_ibfk_1` FOREIGN KEY (`gallery_id`) REFERENCES `gallery` (`gallery_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,7 +260,7 @@ CREATE TABLE `gallery_traits` (
 
 LOCK TABLES `gallery_traits` WRITE;
 /*!40000 ALTER TABLE `gallery_traits` DISABLE KEYS */;
-INSERT INTO `gallery_traits` VALUES (1,'SoHo');
+INSERT INTO `gallery_traits` VALUES (1,1,'SoHo'),(2,1,'NYC');
 /*!40000 ALTER TABLE `gallery_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -505,11 +510,20 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteArtistTrait`(
-	IN traitName varchar(128),
-	IN artistId INT(128)
+	IN p_trait_id INT,
+	IN artistId INT
 )
 BEGIN
-	DELETE FROM `artist_traits` WHERE `trait` = traitName && `artist_id` = artistId;
+	IF EXISTS(SELECT 1 from artist_traits where trait_id = p_trait_id)
+    THEN
+		BEGIN
+			DELETE FROM `artist_traits` WHERE `trait_id` = p_trait_id;
+            
+            SELECT 1 as return_code, 'Trait Deleted Successfully' as status;
+        END;
+	ELSE
+        SELECT -1 as return_code , 'Traits Does not Exist' as status;
+	END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -878,6 +892,41 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_updateArtistTrait` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_updateArtistTrait`(
+	IN p_artist_id INT,
+    IN p_trait_id INT,
+    IN p_new_trait varchar(256)
+)
+BEGIN
+	IF EXISTS (SELECT 1 FROM artist_traits WHERE artist_id = p_artist_id and trait_id = p_trait_id)
+    THEN
+		BEGIN
+			UPDATE `exhibition`.`artist_traits`
+			SET
+			`trait` = p_new_trait
+			WHERE `trait_id` = p_trait_id;
+            
+            SELECT 1 as return_code, 'Trait Updated Successfully' as status;
+        END;
+	ELSE
+		SELECT -1 as return_code, 'Trait Doesnt exists' as status;
+	END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_uploadArt` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -929,4 +978,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-29 12:44:29
+-- Dump completed on 2017-04-29 23:45:40
