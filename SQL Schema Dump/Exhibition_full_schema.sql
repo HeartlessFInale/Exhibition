@@ -70,7 +70,6 @@ CREATE TABLE `art_traits` (
 
 LOCK TABLES `art_traits` WRITE;
 /*!40000 ALTER TABLE `art_traits` DISABLE KEYS */;
-INSERT INTO `art_traits` VALUES (1,1,'Test');
 /*!40000 ALTER TABLE `art_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -541,11 +540,20 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteArtTrait`(
-	IN traitName varchar(128),
-	IN artId INT(128)
+	IN p_trait_id INT,
+	IN p_art_id INT
 )
 BEGIN
-	DELETE FROM `art_traits` WHERE `trait` = traitName && `art_id` = artId;
+	IF EXISTS(SELECT 1 from art_traits where trait_id = p_trait_id)
+    THEN
+		BEGIN
+			DELETE FROM `art_traits` WHERE `trait_id` = p_trait_id;
+            
+            SELECT 1 as return_code, 'Trait Deleted Successfully' as status;
+        END;
+	ELSE
+        SELECT -1 as return_code , 'Traits Does not Exist' as status;
+	END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -661,11 +669,11 @@ BEGIN
     WHERE gallery_id = p_gallery_id;
     
     /* QUERY TO FETCH ARTWORK EXHIBITED BY GALLERY */
-    SELECT a.art_id, a.name, a.description, a.picture,at.traits 
+    SELECT a.art_id, a.name, a.description, a.picture,at.traits,at.trait_ids
     FROM art a
     JOIN gallery_art ga
     ON a.art_id = ga.art_id
-    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits',art_id FROM art_traits GROUP BY art_id) at
+    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits',GROUP_CONCAT(trait_id) as trait_ids ,art_id FROM art_traits GROUP BY art_id) at
     ON a.art_id = at.art_id
     WHERE ga.gallery_id = p_gallery_id AND a.is_deleted != 1;
     
@@ -927,6 +935,41 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_updateArtTrait` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_updateArtTrait`(
+	IN p_art_id INT,
+    IN p_trait_id INT,
+    IN p_new_trait varchar(256)
+)
+BEGIN
+	IF EXISTS (SELECT 1 FROM art_traits WHERE art_id = p_art_id and trait_id = p_trait_id)
+    THEN
+		BEGIN
+			UPDATE `exhibition`.`art_traits`
+			SET
+			`trait` = p_new_trait
+			WHERE `trait_id` = p_trait_id;
+            
+            SELECT 1 as return_code, 'Trait Updated Successfully' as status;
+        END;
+	ELSE
+		SELECT -1 as return_code, 'Trait Doesnt exists' as status;
+	END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_uploadArt` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -978,4 +1021,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-29 23:45:40
+-- Dump completed on 2017-04-30 12:54:07
