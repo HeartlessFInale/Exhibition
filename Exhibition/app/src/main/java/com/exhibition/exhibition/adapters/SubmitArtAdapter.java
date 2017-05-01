@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.exhibition.exhibition.ApiHelper;
 import com.exhibition.exhibition.R;
 import com.exhibition.exhibition.models.Art;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class SubmitArtAdapter extends RecyclerView.Adapter<SubmitArtAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Glide.with(context)
+        Picasso.with(context)
                 .load(ApiHelper.URL + ApiHelper.IMAGES + artists.get(position).picture)
                 .into(holder.imageView);
         holder.textView.setText(artists.get(position).name);

@@ -21,6 +21,7 @@ import com.exhibition.exhibition.ArtDetailActivity;
 import com.exhibition.exhibition.R;
 import com.exhibition.exhibition.models.Art;
 import com.exhibition.exhibition.models.RefreshableActivity;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -59,7 +60,7 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Glide.with(context)
+        Picasso.with(context)
                 .load(ApiHelper.URL + ApiHelper.IMAGES + artists.get(position).picture)
                 .into(holder.imageView);
         holder.textView.setText(artists.get(position).name);
@@ -135,7 +136,7 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
 
     private void showConfirmationDialog(final int position) {
         ImageView imageView = new ImageView(context);
-        Glide.with(context)
+        Picasso.with(context)
                 .load(ApiHelper.URL + ApiHelper.IMAGES + artists.get(position).picture)
                 .into(imageView);
         alertDialog = new AlertDialog.Builder(context)

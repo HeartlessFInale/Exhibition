@@ -3,13 +3,17 @@ package com.exhibition.exhibition;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exhibition.exhibition.models.Art;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -21,23 +25,31 @@ public class ArtDetailActivity extends AppCompatActivity {
     EditText editText;
     Button button;
     Art art;
-    String traitsTxt = "";
+    String traitsHeader = "Traits:\n";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_art_detail);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         art = getIntent().getParcelableExtra("art");
-        traitsTxt += art.traits;
+        getSupportActionBar().setTitle(art.name);
+        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        Picasso.with(this)
+                .load(ApiHelper.URL + ApiHelper.IMAGES + art.picture)
+                .into(imageView);
         title = ((TextView) findViewById(R.id.artTitle));
         traits = ((TextView) findViewById(R.id.artTraits));
+        if (!TextUtils.isEmpty(art.traits)) {
+            traits.setText(traitsHeader + art.traits);
+        }
         final EditText editText = (EditText) findViewById(R.id.editText);
         button = ((Button) findViewById(R.id.button));
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (editText.getText().toString().trim().length() != 0) {
-                    traitsTxt += editText.getText().toString() + ", ";
+                    traitsHeader += editText.getText().toString() + ", ";
                     new AddTrait().execute(String.valueOf(art.id), editText.getText().toString());
                     editText.setText("");
                 } else {
@@ -59,7 +71,7 @@ public class ArtDetailActivity extends AppCompatActivity {
                     public void run() {
                         Toast.makeText(ArtDetailActivity.this, s, Toast.LENGTH_SHORT).show();
                         updateUI();
-//                        new UpdateArt().execute();
+                        new UpdateArt().execute();
                     }
                 });
             } catch (IOException e) {
@@ -69,6 +81,15 @@ public class ArtDetailActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class UpdateArt extends AsyncTask<Void, Void, Void> {
@@ -94,8 +115,8 @@ public class ArtDetailActivity extends AppCompatActivity {
 
     private void updateUI() {
         title.setText(art.name);
-        if (!art.traits.equals("null")) {
-            traits.setText("Traits\n\n" + traitsTxt);
+        if (!TextUtils.isEmpty(art.traits)) {
+            traits.setText(traitsHeader + art.traits);
         }
     }
 }

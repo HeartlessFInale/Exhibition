@@ -13,8 +13,10 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +28,7 @@ import com.exhibition.exhibition.models.ArtistDetails;
 import com.exhibition.exhibition.models.Gallery;
 import com.exhibition.exhibition.models.GalleryDetails;
 import com.exhibition.exhibition.models.RefreshableActivity;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -123,7 +126,7 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
         description.setText(gallery.description);
         year.setText("Since " + gallery.year);
         if (!TextUtils.isEmpty(gallery.photo)) {
-            Glide.with(this)
+            Picasso.with(this)
                     .load(ApiHelper.URL + ApiHelper.IMAGES + gallery.photo)
                     .into(imageView);
         }
@@ -144,6 +147,24 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
         }
         if (id == android.R.id.home) {
             finish();
+        }
+        if (id == R.id.action_add_trait) {
+            final EditText editText = new EditText(this);
+            new AlertDialog.Builder(this)
+                    .setTitle("Add Trait")
+                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String input = editText.getText().toString();
+                            if (!TextUtils.isEmpty(input.trim())) {
+                                new AddTrait().execute(input);
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .setView(editText)
+                    .create()
+                    .show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -170,7 +191,7 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                artistDetails = ApiHelper.getArtistDetails(1);
+                artistDetails = ApiHelper.getArtistDetails(1, false);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -182,6 +203,26 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
                     submitArtwork();
                 }
             });
+            return null;
+        }
+    }
+
+    private class AddTrait extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                final String message = ApiHelper.addGalleryTrait(params[0], gallery.id);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(GalleryProfileActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return null;
         }
     }

@@ -48,8 +48,10 @@ public class ArtistFragment extends Fragment {
     }
 
     public void updateSearch(List<Artist> artistList) {
-        this.artistList.clear();
-        this.artistList.addAll(artistList);
-        searchAdapter.notifyDataSetChanged();
+        if (searchAdapter != null) {
+            this.artistList.clear();
+            this.artistList.addAll(artistList);
+            searchAdapter.notifyDataSetChanged();
+        }
     }
 }

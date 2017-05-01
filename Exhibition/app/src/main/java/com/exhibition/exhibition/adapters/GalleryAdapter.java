@@ -16,6 +16,7 @@ import com.exhibition.exhibition.ApiHelper;
 import com.exhibition.exhibition.GalleryProfileActivity;
 import com.exhibition.exhibition.R;
 import com.exhibition.exhibition.models.Gallery;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         holder.galleryName.setText(galleries.get(position).name);
         holder.fav.setChecked(galleries.get(position).isFav == 1);
         if (!TextUtils.isEmpty(galleries.get(position).photo)) {
-            Glide.with(context)
+            Picasso.with(context)
                     .load(ApiHelper.URL + ApiHelper.IMAGES + galleries.get(position).photo)
                     .into(holder.imageView);
         }

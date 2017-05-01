@@ -12,6 +12,7 @@ public class Artist implements Parcelable {
     public int id;
     public String picture;
     public String description;
+    public String traits;
 
     public Artist(String name, int id, String picture) {
         this.name = name;
@@ -43,6 +44,14 @@ public class Artist implements Parcelable {
         this.id = id;
         this.picture = picture;
         this.description = description;
+    }
+
+    public Artist(String name, int id, String picture, String description, String traits) {
+        this.name = name;
+        this.id = id;
+        this.picture = picture;
+        this.description = description;
+        this.traits = traits;
     }
 
     @Override

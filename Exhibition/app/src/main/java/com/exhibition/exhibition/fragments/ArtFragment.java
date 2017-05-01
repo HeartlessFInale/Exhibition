@@ -38,9 +38,11 @@ public class ArtFragment extends Fragment {
     }
 
     public void updateSearch(List<Art> arts) {
-        artList.clear();
-        artList.addAll(arts);
-        searchAdapter.notifyDataSetChanged();
+        if (searchAdapter != null) {
+            artList.clear();
+            artList.addAll(arts);
+            searchAdapter.notifyDataSetChanged();
+        }
     }
 
 
