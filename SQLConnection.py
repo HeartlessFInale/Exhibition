@@ -287,6 +287,47 @@ def addGalleryTrait(gallery_id, trait):
         return e.message
 
 
+
+def updateGalleryTrait(gallery_id, trait_id, new_trait):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_updateGalleryTrait', (gallery_id,trait_id,new_trait))
+
+        conn.commit()
+
+        result = cursor.fetchone()
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
+
+
+
+def deleteGalleryTrait(gallery_id, trait_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_deleteGalleryTrait', (trait_id,gallery_id))
+
+        conn.commit()
+
+        result = cursor.fetchone()
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
+
+
+
 def search(search_term,artist_id):
     try:
         conn = CreateConnection()

@@ -259,7 +259,7 @@ CREATE TABLE `gallery_traits` (
 
 LOCK TABLES `gallery_traits` WRITE;
 /*!40000 ALTER TABLE `gallery_traits` DISABLE KEYS */;
-INSERT INTO `gallery_traits` VALUES (1,1,'SoHo'),(2,1,'NYC');
+INSERT INTO `gallery_traits` VALUES (1,1,'SoHo');
 /*!40000 ALTER TABLE `gallery_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -571,11 +571,21 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteGalleryTrait`(
-	IN traitName varchar(128),
-	IN galleryId INT(128)
+	IN p_trait_id INT,
+	IN p_gallery_id INT
 )
 BEGIN
-	DELETE FROM `gallery_traits` WHERE `trait` = traitName && `gallery_id` = galleryId;
+	IF EXISTS(SELECT 1 from gallery_traits where trait_id = p_trait_id)
+    THEN
+		BEGIN
+			DELETE FROM `gallery_traits` WHERE `trait_id` = p_trait_id;
+            
+            SELECT 1 as return_code, 'Trait Deleted Successfully' as status;
+        END;
+	ELSE
+        SELECT -1 as return_code , 'Traits Does not Exist' as status;
+	END IF;
+	
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -970,6 +980,41 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_updateGalleryTrait` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_updateGalleryTrait`(
+	IN p_gallery_id INT,
+    IN p_trait_id INT,
+    IN p_new_trait varchar(256)
+)
+BEGIN
+	IF EXISTS (SELECT 1 FROM gallery_traits WHERE gallery_id = p_gallery_id and trait_id = p_trait_id)
+    THEN
+		BEGIN
+			UPDATE `exhibition`.`gallery_traits`
+			SET
+			`trait` = p_new_trait
+			WHERE `trait_id` = p_trait_id;
+            
+            SELECT 1 as return_code, 'Trait Updated Successfully' as status;
+        END;
+	ELSE
+		SELECT -1 as return_code, 'Trait Doesnt exists' as status;
+	END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_uploadArt` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1021,4 +1066,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-30 12:54:07
+-- Dump completed on 2017-04-30 21:39:47

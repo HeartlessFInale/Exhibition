@@ -276,9 +276,6 @@ def deleteArtistTrait():
         return jsonify(error)
 
 
-
-
-
 @app.route('/addGalleryTrait')
 def addGalleryTrait():
     try:
@@ -293,7 +290,33 @@ def addGalleryTrait():
         return jsonify(error)
 
 
+@app.route('/updateGalleryTrait')
+def updateGalleryTrait():
+    try:
+        gallery_id = request.args['gallery_id']
+        trait_id = request.args['trait_id']
+        new_trait = request.args['new_trait']
 
+        result = SQLConnection.updateGalleryTrait(gallery_id, trait_id,new_trait)
+
+        return jsonify(result)
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route('/deleteGalleryTrait')
+def deleteGalleryTrait():
+    try:
+        gallery_id = request.args['gallery_id']
+        trait_id = request.args['trait_id']
+
+        result = SQLConnection.deleteGalleryTrait(gallery_id, trait_id)
+
+        return jsonify(result)
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
 
 
 @app.route('/search')
