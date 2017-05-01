@@ -74,13 +74,12 @@ def addNewGallery():
         error = 'Internal Server Error: {}'.format(e.message)
         return jsonify(error)
 
-
-@app.route("/getGalleryDetail")
-def getGalleryDetail():
+@app.route("/getArtDetail")
+def getArtDetail():
     try:
-        gallery_id = request.args['gallery_id']
+        art_id = request.args['art_id']
 
-        result = SQLConnection.get_gallery_details(gallery_id)
+        result = SQLConnection.get_art_details(art_id)
 
         return jsonify(result)
 
@@ -88,13 +87,25 @@ def getGalleryDetail():
         error = 'Internal Server Error: {}'.format(e.message)
         return jsonify(error)
 
-
 @app.route("/getArtistDetail")
 def getArtistDetail():
     try:
         artist_id = request.args['artist_id']
 
         result = SQLConnection.get_artist_details(artist_id)
+
+        return jsonify(result)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+@app.route("/getGalleryDetail")
+def getGalleryDetail():
+    try:
+        gallery_id = request.args['gallery_id']
+
+        result = SQLConnection.get_gallery_details(gallery_id)
 
         return jsonify(result)
 

@@ -114,6 +114,24 @@ def get_artist_details(artist_id):
         return e.message
 
 
+def get_art_details(art_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_getArtDetails', (art_id,))
+
+        result = cursor.fetchall()
+
+        CloseConnection(conn)
+
+        return result
+    except Exception as e:
+        print e
+        return e.message
+
+
 def add_new_artist(artist_name, description, file_name):
     try:
         conn = CreateConnection()
