@@ -114,7 +114,7 @@ CREATE TABLE `artist_traits` (
   PRIMARY KEY (`trait_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `artist_traits_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +123,7 @@ CREATE TABLE `artist_traits` (
 
 LOCK TABLES `artist_traits` WRITE;
 /*!40000 ALTER TABLE `artist_traits` DISABLE KEYS */;
-INSERT INTO `artist_traits` VALUES (4,1,'cool');
+INSERT INTO `artist_traits` VALUES (4,1,'cool'),(5,1,'contemporary');
 /*!40000 ALTER TABLE `artist_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -856,12 +856,12 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_searchTraitArt`(
-	IN traitName varchar(128)
+	IN traitName varchar(256)
 )
 BEGIN
-	SELECT * 
+	SELECT distinct `art`.* 
 	FROM `art`, `art_traits` 
-	WHERE `art`.`art_id` = `art_traits`.`art_id` AND `art_traits`.`trait` LIKE CONCAT(traitName,'%');
+	WHERE `art`.`art_id` = `art_traits`.`art_id` AND `art_traits`.`trait` REGEXP traitName;
 
 END ;;
 DELIMITER ;
@@ -883,9 +883,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_searchTraitArtist`(
 	IN traitName varchar(128)
 )
 BEGIN
-	SELECT * 
+	SELECT distinct `artist`.* 
 	FROM `artist`, `artist_traits` 
-	WHERE `artist`.`artist_id` = `artist_traits`.`artist_id` AND `artist_traits`.`trait` LIKE CONCAT(traitName,'%');
+	WHERE `artist`.`artist_id` = `artist_traits`.`artist_id` AND `artist_traits`.`trait` REGEXP traitName;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -903,12 +903,12 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_searchTraitGallery`(
-	IN traitName varchar(128)
+	IN traitName varchar(256)
 )
 BEGIN
-	SELECT * 
+	SELECT distinct `gallery`.* 
 	FROM `gallery`, `gallery_traits` 
-	WHERE `gallery`.`gallery_id` = `gallery_traits`.`gallery_id` AND `gallery_traits`.`trait` LIKE CONCAT(traitName,'%');
+	WHERE `gallery`.`gallery_id` = `gallery_traits`.`gallery_id` AND `gallery_traits`.`trait` REGEXP traitName;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1071,4 +1071,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-01  0:13:56
+-- Dump completed on 2017-05-01  0:48:16

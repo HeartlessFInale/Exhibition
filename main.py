@@ -365,6 +365,8 @@ def searchTrait():
     try:
         search_term = request.args['search_term']
 
+        search_term = search_term.replace(',', '|')
+
         result = SQLConnection.searchTrait(search_term)
 
         return jsonify(result)
