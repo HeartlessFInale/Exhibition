@@ -114,7 +114,7 @@ CREATE TABLE `artist_traits` (
   PRIMARY KEY (`trait_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `artist_traits_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,6 +123,7 @@ CREATE TABLE `artist_traits` (
 
 LOCK TABLES `artist_traits` WRITE;
 /*!40000 ALTER TABLE `artist_traits` DISABLE KEYS */;
+INSERT INTO `artist_traits` VALUES (4,1,'cool');
 /*!40000 ALTER TABLE `artist_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -631,12 +632,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getArtistDetails`(
 )
 BEGIN
 	SELECT * 
-    FROM artist 
-    where artist_id = p_artist_id;
+    FROM artist a
+    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits', GROUP_CONCAT(trait_id) as trait_ids, artist_id FROM artist_traits GROUP BY artist_id) at
+    ON a.artist_id = at.artist_id
+    where a.artist_id = p_artist_id;
     
     SELECT *
     FROM art a
-    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits',art_id FROM art_traits GROUP BY art_id) at
+    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits', GROUP_CONCAT(trait_id) as trait_ids, art_id FROM art_traits GROUP BY art_id) at
     ON a.art_id = at.art_id
     where a.artist_id  = p_artist_id
     and a.is_deleted != 1;
@@ -669,6 +672,8 @@ BEGIN
     FROM gallery ga
     LEFT JOIN favorite_gallery fav
     ON ga.gallery_id = fav.gallery_id
+    LEFT JOIN (SELECT GROUP_CONCAT(trait) as 'traits', GROUP_CONCAT(trait_id) as trait_ids, gallery_id FROM gallery_traits GROUP BY gallery_id) at
+    ON ga.gallery_id = at.gallery_id
     WHERE ga.gallery_id = p_gallery_id;
     
     /* QUERY TO FETCH ARTIST EXHIBITED BY GALLERY */
@@ -1066,4 +1071,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-30 21:39:47
+-- Dump completed on 2017-05-01  0:13:56
