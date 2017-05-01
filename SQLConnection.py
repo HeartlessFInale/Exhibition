@@ -210,6 +210,45 @@ def addArtTrait(art_id, trait):
         return e.message
 
 
+def updateArTrait(art_id, trait_id, new_trait):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_updateArtTrait', (art_id,trait_id,new_trait))
+
+        conn.commit()
+
+        result = cursor.fetchone()
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
+
+
+def deleteArtTrait(art_id, trait_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_deleteArtTrait', (trait_id,art_id))
+
+        conn.commit()
+
+        result = cursor.fetchone()
+
+        return result
+
+    except Exception as e:
+        print e
+        return e.message
+
+
+
 def addArtistTrait(artist_id, trait):
     try:
         conn = CreateConnection()
