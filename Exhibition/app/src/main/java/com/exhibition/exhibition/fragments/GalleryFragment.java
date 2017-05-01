@@ -50,8 +50,10 @@ public class GalleryFragment extends Fragment {
     }
 
     public void updateSearch(List<Gallery> galleryList) {
-        galleries.clear();
-        galleries.addAll(galleryList);
-        searchAdapter.notifyDataSetChanged();
+        if (searchAdapter != null) {
+            galleries.clear();
+            galleries.addAll(galleryList);
+            searchAdapter.notifyDataSetChanged();
+        }
     }
 }

@@ -1,9 +1,17 @@
 <resources>
     <string name="app_name">Exhibition</string>
     <string name="action_submit">Submit Artwork</string>
+    <string name="action_upload">Upload Artwork</string>
     <string name="select_picture">Select Picture</string>
     <string name="action_search">Search</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="add_trait">Add Trait</string>
 </resources>

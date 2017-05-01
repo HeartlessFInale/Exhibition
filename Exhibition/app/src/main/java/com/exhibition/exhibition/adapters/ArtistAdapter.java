@@ -15,6 +15,7 @@ import com.exhibition.exhibition.ApiHelper;
 import com.exhibition.exhibition.ArtistProfileActivity;
 import com.exhibition.exhibition.R;
 import com.exhibition.exhibition.models.Artist;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Glide.with(context)
+        Picasso.with(context)
             .load(ApiHelper.URL + ApiHelper.IMAGES + artists.get(position).picture)
             .into(holder.imageView);
         holder.textView.setText(artists.get(position).name);

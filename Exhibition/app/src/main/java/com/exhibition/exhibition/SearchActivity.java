@@ -10,9 +10,14 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TabWidget;
+import android.widget.TextView;
 
 import com.exhibition.exhibition.fragments.ArtFragment;
 import com.exhibition.exhibition.fragments.ArtistFragment;
@@ -35,13 +40,35 @@ public class SearchActivity extends AppCompatActivity {
     EditText searchQuery;
     private ViewPager viewPager;
     private List<SearchResult> searchResults;
+    boolean searchForTraits;
+    Switch aSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        aSwitch = (Switch) findViewById(R.id.toggleButton);
+        aSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchForTraits = aSwitch.isChecked();
+                updateSearch(searchQuery.getText().toString());
+            }
+        });
         searchQuery = (EditText) findViewById(R.id.editText);
-
+        searchQuery.setMaxLines(1);
+        searchQuery.setInputType(InputType.TYPE_CLASS_TEXT);
+        searchQuery.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchQuery.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || event.getKeyCode() == KeyEvent.ACTION_DOWN) {
+                    updateSearch(searchQuery.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Art"));
         tabLayout.addTab(tabLayout.newTab().setText("Artist"));
@@ -110,7 +137,11 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             try {
-                searchResults = ApiHelper.search("1", params[0]);
+                if (searchForTraits) {
+                    searchResults = ApiHelper.searchTrait(params[0]);
+                } else {
+                    searchResults = ApiHelper.search("1", params[0]);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {

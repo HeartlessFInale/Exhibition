@@ -58,6 +58,13 @@ public class Gallery implements Parcelable {
         this.photo = photo;
     }
 
+    public Gallery(String name, String description, int gallery_id, String photo) {
+        this.name = name;
+        this.description = description;
+        this.id = gallery_id;
+        this.photo = photo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
