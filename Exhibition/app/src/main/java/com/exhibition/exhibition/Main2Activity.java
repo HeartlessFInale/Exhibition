@@ -115,6 +115,10 @@ public class Main2Activity extends AppCompatActivity
             startActivity(intent);
         }
 
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(Main2Activity.this, DeveloperSettings.class));
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

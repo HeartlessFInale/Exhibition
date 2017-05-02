@@ -18,6 +18,7 @@ public class Gallery implements Parcelable {
     public String photo;
     public double latitude;
     public double longitude;
+    public String traits;
 
     public Gallery() {}
 
@@ -63,6 +64,23 @@ public class Gallery implements Parcelable {
         this.description = description;
         this.id = gallery_id;
         this.photo = photo;
+    }
+
+    public Gallery(String name, String description, int id, int isFav, String photo, String traits) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.isFav = isFav;
+        this.photo = photo;
+        this.traits = traits;
+    }
+
+    public Gallery(String name, String description, int gallery_id, String photo, String traits) {
+        this.name = name;
+        this.description = description;
+        this.id = gallery_id;
+        this.photo = photo;
+        this.traits = traits;
     }
 
     @Override

@@ -40,7 +40,7 @@ public class ArtDetailActivity extends AppCompatActivity {
                 .into(imageView);
         title = ((TextView) findViewById(R.id.artTitle));
         traits = ((TextView) findViewById(R.id.artTraits));
-        if (!TextUtils.isEmpty(art.traits)) {
+        if (!"null".equals(art.traits)) {
             traits.setText(traitsHeader + art.traits);
         }
         final EditText editText = (EditText) findViewById(R.id.editText);
@@ -49,7 +49,6 @@ public class ArtDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (editText.getText().toString().trim().length() != 0) {
-                    traitsHeader += editText.getText().toString() + ", ";
                     new AddTrait().execute(String.valueOf(art.id), editText.getText().toString());
                     editText.setText("");
                 } else {
@@ -97,7 +96,7 @@ public class ArtDetailActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                ApiHelper.getArtDetails(art.id);
+                art = ApiHelper.getArtDetails(art.id);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -115,7 +114,7 @@ public class ArtDetailActivity extends AppCompatActivity {
 
     private void updateUI() {
         title.setText(art.name);
-        if (!TextUtils.isEmpty(art.traits)) {
+        if (!"null".equals(art.traits)) {
             traits.setText(traitsHeader + art.traits);
         }
     }
