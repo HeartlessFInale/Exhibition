@@ -112,7 +112,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements Refresha
         bio.setText(artist.description);
         name.setText(artist.name);
         bio.setText(artist.description);
-        if (!artist.traits.equals("null")) {
+        if (!TextUtils.isEmpty(artist.traits)) {
             traits.setText("Traits:\n" + artist.traits);
         }
         progressDialog.hide();

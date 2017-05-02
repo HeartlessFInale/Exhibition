@@ -52,6 +52,7 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
     private GalleryDetails galleryDetails;
     private ArtistDetails artistDetails;
     private ProgressDialog progressDialog;
+    private TextView artType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,12 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
         likeToggle = (ToggleButton) findViewById(R.id.imageView2);
         imageView = (ImageView) findViewById(R.id.imageView);
         year = (TextView) findViewById(R.id.textView2);
+        artType = (TextView) findViewById(R.id.textView5);
+        if (!"null".equals(gallery.traits)) {
+            artType.setText("Traits:\n" + gallery.traits);
+        } else {
+            artType.setText("");
+        }
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         artistRecyclerView = (RecyclerView) findViewById(R.id.artistRecyclerView);
@@ -129,6 +136,11 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
             Picasso.with(this)
                     .load(ApiHelper.URL + ApiHelper.IMAGES + gallery.photo)
                     .into(imageView);
+        }
+        if (!"null".equals(gallery.traits)) {
+            artType.setText("Traits:\n" + gallery.traits);
+        } else {
+            artType.setText("");
         }
         progressDialog.hide();
     }

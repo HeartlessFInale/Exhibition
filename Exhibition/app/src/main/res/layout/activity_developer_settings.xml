@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_developer_settings"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.exhibition.exhibition.DeveloperSettings">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView"
+            android:padding="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Artist" />
+
+        <EditText
+            android:id="@+id/artistName"
+            android:hint="Artist Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"/>
+
+        <EditText
+            android:id="@+id/artistDescription"
+            android:hint="Artist Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/artistName"/>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:scaleType="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/artistDescription"/>
+
+        <Button
+            android:id="@+id/choosePicBtn"
+            android:text="Choose Profile Picture"
+            android:layout_below="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/addArtistBtn"
+            android:text="Add Artist"
+            android:layout_below="@+id/choosePicBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:padding="10dp"
+            android:layout_below="@+id/addArtistBtn"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Gallery" />
+
+        <EditText
+            android:id="@+id/galleryName"
+            android:hint="Gallery Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView2"/>
+
+        <EditText
+            android:id="@+id/galleryYear"
+            android:hint="Gallery Year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/galleryName"/>
+
+        <EditText
+            android:id="@+id/galleryDescription"
+            android:hint="Gallery Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/galleryYear"/>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:scaleType="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/galleryDescription"/>
+
+        <Button
+            android:id="@+id/chooseGalleryPicBtn"
+            android:text="Choose Gallery Picture"
+            android:layout_below="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/addGalleryBtn"
+            android:text="Add Gallery"
+            android:layout_below="@+id/chooseGalleryPicBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+</ScrollView>
