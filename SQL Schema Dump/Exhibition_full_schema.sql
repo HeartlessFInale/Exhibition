@@ -34,7 +34,7 @@ CREATE TABLE `art` (
   PRIMARY KEY (`art_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `art_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `art` (
 
 LOCK TABLES `art` WRITE;
 /*!40000 ALTER TABLE `art` DISABLE KEYS */;
-INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg','\0'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg','\0'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg',''),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg','\0'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg',''),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg',''),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg','\0'),(16,'Fall leaves','description',1,'2017-04-10-23-36-49-2054567525_1491951149.jpg',''),(17,'Night Time','Night Time',1,'2017-04-10-23-34-47--47576534_1492375905.jpg',''),(18,'hi','hi',1,'2017-04-10-23-36-49-2054567525_1492555052.jpg',''),(19,'Blue sky','test',1,'2017-04-10-23-34-47--47576534_1492560480.jpg','\0'),(20,'fall','desc',1,'2017-04-10-23-36-49-2054567525_1492560689.jpg','\0'),(21,'orange','its cool no?',1,'2017-04-10-23-36-49-2054567525_1493661763.jpg','');
+INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg','\0'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg','\0'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg',''),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg','\0'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg',''),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg',''),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg','\0'),(16,'Fall leaves','description',1,'2017-04-10-23-36-49-2054567525_1491951149.jpg',''),(17,'Night Time','Night Time',1,'2017-04-10-23-34-47--47576534_1492375905.jpg',''),(18,'hi','hi',1,'2017-04-10-23-36-49-2054567525_1492555052.jpg',''),(19,'Blue sky','test',1,'2017-04-10-23-34-47--47576534_1492560480.jpg','\0'),(20,'fall','desc',1,'2017-04-10-23-36-49-2054567525_1492560689.jpg','\0'),(21,'orange','its cool no?',1,'2017-04-10-23-36-49-2054567525_1493661763.jpg',''),(22,'Pablo','Escobar',1,'2017-05-02-13-19-54-2048143300_1493747996.jpg','\0');
 /*!40000 ALTER TABLE `art` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,7 +61,7 @@ CREATE TABLE `art_traits` (
   PRIMARY KEY (`trait_id`),
   KEY `art_id` (`art_id`),
   CONSTRAINT `art_traits_ibfk_1` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `art_traits` (
 
 LOCK TABLES `art_traits` WRITE;
 /*!40000 ALTER TABLE `art_traits` DISABLE KEYS */;
-INSERT INTO `art_traits` VALUES (2,1,'Colorful');
+INSERT INTO `art_traits` VALUES (2,1,'Colorful'),(3,12,'blue'),(4,4,'fit'),(5,12,'sky');
 /*!40000 ALTER TABLE `art_traits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,7 +88,7 @@ CREATE TABLE `artist` (
   `picture` varchar(256) NOT NULL,
   PRIMARY KEY (`artist_id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE `artist` (
 
 LOCK TABLES `artist` WRITE;
 /*!40000 ALTER TABLE `artist` DISABLE KEYS */;
-INSERT INTO `artist` VALUES (1,'Andy Warhol','Test Artist Description 1','andy_warhol_1491747860.jpg');
+INSERT INTO `artist` VALUES (1,'Andy Warhol','Test Artist Description 1','andy_warhol_1491747860.jpg'),(2,'Pablo Picasso','Famous for co-founding Cubism, a style of painting where objects of the painting subject are broken up and re-painted in an abstract form.','2017-05-02-13-19-54-2048143300_1493746070.jpg'),(3,'Vincent Van Gogh','One of the most famous and influential figures in the history of Western art.','2017-05-02-13-41-21-616198371_1493747234.jpg');
 /*!40000 ALTER TABLE `artist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,13 +192,13 @@ CREATE TABLE `gallery` (
   `name` varchar(128) NOT NULL,
   `year` int(11) NOT NULL,
   `description` varchar(1024) NOT NULL,
-  `photo` varchar(256) NOT NULL,
+  `photo` varchar(1024) NOT NULL,
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL,
   PRIMARY KEY (`gallery_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,7 +207,7 @@ CREATE TABLE `gallery` (
 
 LOCK TABLES `gallery` WRITE;
 /*!40000 ALTER TABLE `gallery` DISABLE KEYS */;
-INSERT INTO `gallery` VALUES (1,'Gallery 1',2001,'This is a Test Description','galleryLogo_1491747860.jpeg',40.7233574,-73.9932855,'2017-04-02 17:27:33','2017-04-02 17:27:33'),(2,'Gallery 2',2010,'Test Description 2','art_gallery_logo_14917478860.jpeg',40.7594631,-74.0055771,'2017-04-02 20:21:55','2017-04-02 20:21:55');
+INSERT INTO `gallery` VALUES (1,'Gallery 1',2001,'This is a Test Description','galleryLogo_1491747860.jpeg',40.7233574,-73.9932855,'2017-04-02 17:27:33','2017-04-02 17:27:33'),(2,'Gallery 2',2010,'Test Description 2','art_gallery_logo_14917478860.jpeg',40.7594631,-74.0055771,'2017-04-02 20:21:55','2017-04-02 20:21:55'),(3,'Incredible Gallery',2017,'A visually stunning collection of extravagant works of art.','2017-05-02-15-28-48--523412997_1493754360.jpg',0,0,'2017-05-02 15:46:00','2017-05-02 15:46:00');
 /*!40000 ALTER TABLE `gallery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -287,7 +287,7 @@ CREATE TABLE `submissions` (
   CONSTRAINT `art_id` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `artist_id` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `gallery_id` FOREIGN KEY (`gallery_id`) REFERENCES `gallery` (`gallery_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -296,7 +296,7 @@ CREATE TABLE `submissions` (
 
 LOCK TABLES `submissions` WRITE;
 /*!40000 ALTER TABLE `submissions` DISABLE KEYS */;
-INSERT INTO `submissions` VALUES (1,15,1,1,'','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20'),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32'),(9,18,1,1,'','2017-04-18 18:37:43','2017-04-18 18:37:43'),(10,20,1,1,'','2017-04-18 20:12:15','2017-04-18 20:12:15'),(11,21,1,1,'','2017-05-01 14:03:05','2017-05-01 14:03:05');
+INSERT INTO `submissions` VALUES (1,15,1,1,'','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20'),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32'),(9,18,1,1,'','2017-04-18 18:37:43','2017-04-18 18:37:43'),(10,20,1,1,'','2017-04-18 20:12:15','2017-04-18 20:12:15'),(11,21,1,1,'','2017-05-01 14:03:05','2017-05-01 14:03:05'),(12,22,1,1,'','2017-05-02 14:00:15','2017-05-02 14:00:15');
 /*!40000 ALTER TABLE `submissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1098,4 +1098,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-01 18:32:44
+-- Dump completed on 2017-05-02 16:20:36

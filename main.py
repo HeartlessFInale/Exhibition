@@ -55,18 +55,32 @@ def getGalleryList():
         return jsonify(error)
 
 
-@app.route("/addNewGallery")
+@app.route("/addNewGallery" , methods = ['POST'])
 def addNewGallery():
     try:
         gallery_name = request.args['gallery_name']
         year = request.args['year']
         desc = request.args['desc']
-        photoBlob = request.args['photoBlob']
+
         latit = request.args['latit']
         longit = request.args['longit']
 
+        img_bytes = request.data
+        file_name = request.args['file_name']
+
+        file_name_arr = file_name.split('.')
+        curr_time = int(time.time())
+
+        new_file_name = '{}_{}.{}'.format(
+            file_name_arr[0], curr_time, file_name_arr[-1])
+
+        f = open('UPLOADS/' + new_file_name, 'wb')
+        f.write(img_bytes)
+        f.close()
+
+
         result = SQLConnection.add_new_gallery(
-            gallery_name, year, desc, photoBlob, latit, longit)
+            gallery_name, year, desc, new_file_name, latit, longit)
 
         return jsonify(result)
 
@@ -114,12 +128,14 @@ def getGalleryDetail():
         return jsonify(error)
 
 
-@app.route("/addNewArtist")
+@app.route("/addNewArtist", methods = ['POST'])
 def addNewArtist():
     try:
         artist_name = request.args['artist_name']
         description = request.args['desc']
-        img_bytes = request.args['img_bytes']
+
+        img_bytes = request.data
+
         file_name = request.args['file_name']
 
         file_name_arr = file_name.split('.')
@@ -145,7 +161,6 @@ def addNewArtist():
 @app.route('/uploadArtwork', methods=['POST'])
 def uploadArtwork():
     try:
-        data = request.data
         art_name = request.args['art_name']
         description = request.args['desc']
         artist_id = request.args['artist_id']
