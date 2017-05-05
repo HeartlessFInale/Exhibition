@@ -38,6 +38,33 @@ def home():
     return render_template('index.html')
 
 
+@app.route("/addFavGallery")
+def addfavgallery():
+    try:
+        artist_id = request.args['artist_id']
+        gallery_id = request.args['gallery_id']
+
+        result = SQLConnection.addFavGallery(artist_id,gallery_id)
+
+        return jsonify(result)
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route("/deleteFavGallery")
+def deletefavgallery():
+    try:
+        artist_id = request.args['artist_id']
+        gallery_id = request.args['gallery_id']
+
+        result = SQLConnection.deleteFavGallery(artist_id, gallery_id)
+
+        return jsonify(result)
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
 @app.route("/getGalleryList")
 def getGalleryList():
     try:
@@ -397,6 +424,20 @@ def searchTrait():
 
         return jsonify(result)
         
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route('/getSubmissions')
+def getSubmissions():
+    try:
+        gallery_id = request.args['gallery_id']
+
+        result = SQLConnection.getSubmissions(gallery_id)
+
+        return jsonify(result)
+
     except Exception as e:
         error = 'Internal Server Error: {}'.format(e.message)
         return jsonify(error)

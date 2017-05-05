@@ -34,7 +34,7 @@ CREATE TABLE `art` (
   PRIMARY KEY (`art_id`),
   KEY `artist_id` (`artist_id`),
   CONSTRAINT `art_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `art` (
 
 LOCK TABLES `art` WRITE;
 /*!40000 ALTER TABLE `art` DISABLE KEYS */;
-INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg','\0'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg','\0'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg',''),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg','\0'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg',''),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg',''),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg','\0'),(16,'Fall leaves','description',1,'2017-04-10-23-36-49-2054567525_1491951149.jpg',''),(17,'Night Time','Night Time',1,'2017-04-10-23-34-47--47576534_1492375905.jpg',''),(18,'hi','hi',1,'2017-04-10-23-36-49-2054567525_1492555052.jpg',''),(19,'Blue sky','test',1,'2017-04-10-23-34-47--47576534_1492560480.jpg','\0'),(20,'fall','desc',1,'2017-04-10-23-36-49-2054567525_1492560689.jpg','\0'),(21,'orange','its cool no?',1,'2017-04-10-23-36-49-2054567525_1493661763.jpg',''),(22,'Pablo','Escobar',1,'2017-05-02-13-19-54-2048143300_1493747996.jpg','\0');
+INSERT INTO `art` VALUES (1,'Art_1','Test Art Description 1',1,'artwork1_1491747860.jpg','\0'),(4,'Test Artwork','This is Test artwork Upload',1,'30daysAbs_1491774976.jpg','\0'),(6,'Test Artwork','This is Test Artwork Upload',1,'30daysAbs_1491775902.jpg',''),(12,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880703.jpg','\0'),(13,'Blue Sky','test',1,'2017-04-10-15-48-20--1053313750_1491880732.jpg',''),(14,'Fall','test',1,'2017-04-10-23-36-49-2054567525_1491881833.jpg',''),(15,'Fall Leaves','test',1,'2017-04-10-23-36-49-2054567525_1491931599.jpg','\0'),(16,'Fall leaves','description',1,'2017-04-10-23-36-49-2054567525_1491951149.jpg',''),(17,'Night Time','Night Time',1,'2017-04-10-23-34-47--47576534_1492375905.jpg',''),(18,'hi','hi',1,'2017-04-10-23-36-49-2054567525_1492555052.jpg',''),(19,'Blue sky','test',1,'2017-04-10-23-34-47--47576534_1492560480.jpg','\0'),(20,'fall','desc',1,'2017-04-10-23-36-49-2054567525_1492560689.jpg','\0'),(21,'orange','its cool no?',1,'2017-04-10-23-36-49-2054567525_1493661763.jpg',''),(22,'Pablo','Escobar',1,'2017-05-02-13-19-54-2048143300_1493747996.jpg','\0'),(23,'test','des',1,'IMG-20170502-WA0000_1493764717.jpg','\0');
 /*!40000 ALTER TABLE `art` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -287,7 +287,7 @@ CREATE TABLE `submissions` (
   CONSTRAINT `art_id` FOREIGN KEY (`art_id`) REFERENCES `art` (`art_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `artist_id` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `gallery_id` FOREIGN KEY (`gallery_id`) REFERENCES `gallery` (`gallery_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -296,7 +296,7 @@ CREATE TABLE `submissions` (
 
 LOCK TABLES `submissions` WRITE;
 /*!40000 ALTER TABLE `submissions` DISABLE KEYS */;
-INSERT INTO `submissions` VALUES (1,15,1,1,'','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20'),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32'),(9,18,1,1,'','2017-04-18 18:37:43','2017-04-18 18:37:43'),(10,20,1,1,'','2017-04-18 20:12:15','2017-04-18 20:12:15'),(11,21,1,1,'','2017-05-01 14:03:05','2017-05-01 14:03:05'),(12,22,1,1,'','2017-05-02 14:00:15','2017-05-02 14:00:15');
+INSERT INTO `submissions` VALUES (1,15,1,1,'\0','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20'),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32'),(9,18,1,1,'','2017-04-18 18:37:43','2017-04-18 18:37:43'),(10,20,1,1,'','2017-04-18 20:12:15','2017-04-18 20:12:15'),(11,21,1,1,'','2017-05-01 14:03:05','2017-05-01 14:03:05'),(12,22,1,1,'','2017-05-02 14:00:15','2017-05-02 14:00:15'),(13,23,1,1,'','2017-05-02 18:38:58','2017-05-02 18:38:58');
 /*!40000 ALTER TABLE `submissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -382,16 +382,16 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addFavoriteGallery`(
-	IN p_gallery_id int,
-    IN p_artist_id int
+	IN p_artist_id int,
+    IN p_gallery_id int
 )
 BEGIN
 	INSERT INTO `exhibition`.`favorite_gallery`
-	(`gallery_id`,
-	`artist_id`)
+	(`gallery_id`, 	`artist_id`)
 	VALUES
-	(p_gallery_id,
-	p_artist_id);
+	(p_gallery_id,	p_artist_id);
+    
+    SELECT 1 as return_code, 'Added Gallery as Favorite' as status;
 
 END ;;
 DELIMITER ;
@@ -605,13 +605,15 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_dropFavoriteGallery`(
-	IN p_gallery_id int,
-    IN p_artist_id int
+	IN p_artist_id int,
+    IN p_gallery_id int
 )
 BEGIN
 	DELETE FROM `exhibition`.`favorite_gallery`
-	WHERE `exhibition`.`gallery_id` = p_gallery_id
-	AND `exhibition`.`artist_id` = p_artist_id;
+	WHERE `favorite_gallery`.`gallery_id` = p_gallery_id
+	AND `favorite_gallery`.`artist_id` = p_artist_id;
+    
+    SELECT 1 as return_code, 'Removed Gallery as Favorite' as status;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -744,6 +746,34 @@ BEGIN
     FROM gallery ga
     LEFT JOIN favorite_gallery fav
     ON ga.gallery_id = fav.gallery_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_getSubmissions` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getSubmissions`(
+	IN p_gallery_id int
+)
+BEGIN
+	SELECT sub.submission_id, sub.art_id, sub.artist_id,sub.create_date,
+    art.name, art.picture,art.is_deleted
+    FROM submissions sub
+    JOIN art art
+    ON sub.art_id = art.art_id
+    JOIN artist arti
+    on sub.artist_id = arti.artist_id
+    WHERE sub.is_pending = true;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1098,4 +1128,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-02 16:20:36
+-- Dump completed on 2017-05-05  0:44:14
