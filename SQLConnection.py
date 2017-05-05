@@ -18,6 +18,47 @@ def CloseConnection(conn):
         print e
 
 
+def addFavGallery(artist_id,gallery_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_addFavoriteGallery', (artist_id,gallery_id))
+
+        conn.commit()
+
+        result = cursor.fetchall()
+
+        CloseConnection(conn)
+
+        return  result
+    except Exception as e:
+        print e
+        return e.message
+
+
+
+def deleteFavGallery(artist_id,gallery_id):
+    try:
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_dropFavoriteGallery', (artist_id,gallery_id))
+
+        conn.commit()
+
+        result = cursor.fetchall()
+
+        CloseConnection(conn)
+
+        return  result
+    except Exception as e:
+        print e
+        return e.message
+
+
 def get_gallery_list(artist_id):
     try:
 
@@ -438,6 +479,28 @@ def searchTrait(search_term):
         cursor.callproc('sp_searchTraitArt', (search_term,))
 
         result['art_list'] = cursor.fetchall()
+
+        CloseConnection(conn)
+
+        return result
+    except Exception as e:
+        print e
+        return e.message
+
+
+
+def getSubmissions(gallery_id):
+    try:
+
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+
+        cursor.callproc('sp_getSubmissions', (gallery_id,))
+
+
+        result = cursor.fetchall()
 
         CloseConnection(conn)
 
