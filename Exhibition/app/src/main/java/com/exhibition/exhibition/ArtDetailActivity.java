@@ -40,7 +40,7 @@ public class ArtDetailActivity extends AppCompatActivity {
                 .into(imageView);
         title = ((TextView) findViewById(R.id.artTitle));
         traits = ((TextView) findViewById(R.id.artTraits));
-        if (!"null".equals(art.traits)) {
+        if (!TextUtils.isEmpty(art.traits)) {
             traits.setText(traitsHeader + art.traits);
         }
         final EditText editText = (EditText) findViewById(R.id.editText);
@@ -114,7 +114,7 @@ public class ArtDetailActivity extends AppCompatActivity {
 
     private void updateUI() {
         title.setText(art.name);
-        if (!"null".equals(art.traits)) {
+        if (!TextUtils.isEmpty(art.traits)) {
             traits.setText(traitsHeader + art.traits);
         }
     }

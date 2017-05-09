@@ -31,7 +31,7 @@ import okhttp3.Response;
  */
 
 public class ApiHelper {
-    public static final String URL = "http://031e5c4a.ngrok.io/";
+    public static final String URL = "http://f339ce17.ngrok.io/";
     public static final String IMAGES = "images/";
 
     private static String getGalleryList(int id) throws IOException {
@@ -334,5 +334,45 @@ public class ApiHelper {
         GalleryResult galleryResult = new GalleryResult(convertJSONArrayToGalleryResult(jsonObject.getJSONArray("gallery_list")), SearchResult.Type.GALLERY);
         searchResults.add(galleryResult);
         return searchResults;
+    }
+
+    public static void addFavGallery(int galleryId, int artistId) throws IOException {
+        Log.d("ApiHelper: addGallery1", "galleryId: " + galleryId);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"addFavGallery?artist_id=" + artistId + "&gallery_id=" + galleryId)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper: addGallery2", s);
+    }
+
+    public static void deleteFavGallery(int galleryId, int artistId) throws IOException {
+        Log.d("ApiHelper: delGallery1", "galleryId: " + galleryId);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"deleteFavGallery?artist_id=" + artistId + "&gallery_id=" + galleryId)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper: delGallery2", s);
+    }
+
+    public static List<Art> getGallerySubmissions(int galleryId) throws IOException, JSONException {
+        Log.d("ApiHelper: getSubm1", "galleryId: " + galleryId);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"getSubmissions?gallery_id=" + galleryId)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper: getSubm2", s);
+        List<Art> arts = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray(s);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            arts.add(new Art(jsonObject.getInt("art_id"), jsonObject.getString("name"), jsonObject.getString("picture")));
+        }
+        return arts;
     }
 }

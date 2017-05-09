@@ -2,6 +2,7 @@ package com.exhibition.exhibition;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +65,13 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
         name = (TextView) findViewById(R.id.textView);
         description = (TextView) findViewById(R.id.textView4);
         likeToggle = (ToggleButton) findViewById(R.id.imageView2);
+        likeToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int add = likeToggle.isChecked() ? 1 : 0;
+                new AddRemoveFavGallery().execute(add, gallery.id, 1);
+            }
+        });
         imageView = (ImageView) findViewById(R.id.imageView);
         year = (TextView) findViewById(R.id.textView2);
         artType = (TextView) findViewById(R.id.textView5);
@@ -178,6 +186,11 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
                     .create()
                     .show();
         }
+        if (id == R.id.action_view_submissions) {
+            Intent intent = new Intent(GalleryProfileActivity.this, GallerySubmissionActivity.class);
+            intent.putExtra("gallery_id", gallery.id);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -233,6 +246,23 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public class AddRemoveFavGallery extends AsyncTask<Integer, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            try {
+                if (params[0] == 1) {
+                    ApiHelper.addFavGallery(params[1], params[2]);
+                } else {
+                    ApiHelper.deleteFavGallery(params[1], params[2]);
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;

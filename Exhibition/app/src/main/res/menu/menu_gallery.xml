@@ -13,4 +13,10 @@
         android:orderInCategory="100"
         android:title="@string/add_trait"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_view_submissions"
+        android:orderInCategory="100"
+        android:title="@string/view_submissions"
+        app:showAsAction="never" />
 </menu>

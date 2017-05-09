@@ -53,6 +53,12 @@ public class Art implements Parcelable {
         this.picture = picture;
     }
 
+    public Art(int art_id, String name, String picture) {
+        this.id = art_id;
+        this.name = name;
+        this.picture = picture;
+    }
+
     @Override
     public int describeContents() {
         return 0;
