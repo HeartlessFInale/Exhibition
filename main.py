@@ -443,5 +443,21 @@ def getSubmissions():
         return jsonify(error)
 
 
+@app.route('/accept_reject_submission')
+def accept_reject():
+    try:
+        submission_id = request.args['submission_id']
+
+        is_accepted = request.args['is_accepted']
+
+        reason = request.args['reason']
+
+        result = SQLConnection.accept_reject(submission_id, is_accepted, reason)
+
+        return jsonify(result)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000)
