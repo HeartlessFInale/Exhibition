@@ -508,3 +508,24 @@ def getSubmissions(gallery_id):
     except Exception as e:
         print e
         return e.message
+
+
+def getSubmissions(submission_id, is_accepted, reason):
+    try:
+
+        conn = CreateConnection()
+
+        cursor = conn.cursor()
+
+        cursor.callproc('sp_accept_reject_Submission', (submission_id, is_accepted, reason))
+
+        conn.commit()
+
+        result = cursor.fetchall()
+
+        CloseConnection(conn)
+
+        return result
+    except Exception as e:
+        print e
+        return e.messageaccept_reject

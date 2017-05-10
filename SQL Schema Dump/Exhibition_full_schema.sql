@@ -176,7 +176,7 @@ CREATE TABLE `favorite_gallery` (
 
 LOCK TABLES `favorite_gallery` WRITE;
 /*!40000 ALTER TABLE `favorite_gallery` DISABLE KEYS */;
-INSERT INTO `favorite_gallery` VALUES (1,1);
+INSERT INTO `favorite_gallery` VALUES (1,1),(3,1);
 /*!40000 ALTER TABLE `favorite_gallery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,6 +280,8 @@ CREATE TABLE `submissions` (
   `is_pending` bit(1) DEFAULT b'1',
   `create_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `modify_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `is_accepted` bit(1) DEFAULT b'0',
+  `reason` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`submission_id`),
   KEY `art_id_idx` (`art_id`),
   KEY `gallery_id_idx` (`gallery_id`),
@@ -296,13 +298,58 @@ CREATE TABLE `submissions` (
 
 LOCK TABLES `submissions` WRITE;
 /*!40000 ALTER TABLE `submissions` DISABLE KEYS */;
-INSERT INTO `submissions` VALUES (1,15,1,1,'\0','2017-04-16 14:19:00','2017-04-16 14:19:00'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20'),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32'),(9,18,1,1,'','2017-04-18 18:37:43','2017-04-18 18:37:43'),(10,20,1,1,'','2017-04-18 20:12:15','2017-04-18 20:12:15'),(11,21,1,1,'','2017-05-01 14:03:05','2017-05-01 14:03:05'),(12,22,1,1,'','2017-05-02 14:00:15','2017-05-02 14:00:15'),(13,23,1,1,'','2017-05-02 18:38:58','2017-05-02 18:38:58');
+INSERT INTO `submissions` VALUES (1,15,1,1,'\0','2017-04-16 14:19:00','2017-05-10 14:17:08','\0','Testing Submission'),(2,16,1,1,'','2017-04-16 14:58:20','2017-04-16 14:58:20','\0',NULL),(8,17,1,1,'','2017-04-16 18:51:32','2017-04-16 18:51:32','\0',NULL),(9,18,1,1,'','2017-04-18 18:37:43','2017-04-18 18:37:43','\0',NULL),(10,20,1,1,'','2017-04-18 20:12:15','2017-04-18 20:12:15','\0',NULL),(11,21,1,1,'','2017-05-01 14:03:05','2017-05-01 14:03:05','\0',NULL),(12,22,1,1,'','2017-05-02 14:00:15','2017-05-02 14:00:15','\0',NULL),(13,23,1,1,'','2017-05-02 18:38:58','2017-05-02 18:38:58','\0',NULL);
 /*!40000 ALTER TABLE `submissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
 -- Dumping routines for database 'exhibition'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `sp_accept_reject_Submission` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_accept_reject_Submission`(
+	IN p_submission_id INT,
+	IN p_is_accepted BIT,
+    IN p_reason VARCHAR(1024)
+)
+BEGIN
+	IF NOT EXISTS(SELECT 1 FROM submissions where submission_id = p_submission_id)
+    THEN
+		BEGIN
+			SELECT -1 as return_code ,'Invalid Submission ID' as status;
+		END;
+    ELSEIF EXISTS(SELECT 1 FROM submissions where submission_id = p_submission_id and is_pending = False)
+    THEN
+		BEGIN
+			SELECT -1 as return_code ,IF(is_accepted = TRUE,'Artwork is already Accepted','Artwork is already Rejected') as status FROM submissions where submission_id = p_submission_id;
+        END;
+	ELSE
+		BEGIN
+			UPDATE `exhibition`.`submissions`
+			SET
+			`is_pending` = False,
+			`is_accepted` = p_is_accepted,
+            `reason` = p_reason,
+            `modify_date` = CURRENT_TIMESTAMP
+			WHERE `submission_id` = p_submission_id;
+            
+            SELECT 1 as return_code, 'Updated Successfully' as status;
+		END;
+	END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_addArtistTrait` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1128,4 +1175,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-05  0:44:14
+-- Dump completed on 2017-05-10 14:25:56
