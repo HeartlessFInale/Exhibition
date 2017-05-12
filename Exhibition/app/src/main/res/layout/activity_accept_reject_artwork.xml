@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_accept_reject_artwork"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.exhibition.exhibition.AcceptRejectArtworkActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:text="Title"
+        android:textSize="21dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/imageView"
+        android:id="@+id/artTitle" />
+
+    <Button
+        android:id="@+id/accept"
+        android:text="Accept"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/artTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/reject"
+        android:text="Reject"
+        android:layout_below="@+id/accept"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

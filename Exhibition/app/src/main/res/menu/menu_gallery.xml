@@ -19,4 +19,10 @@
         android:orderInCategory="100"
         android:title="@string/view_submissions"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_report_gallery"
+        android:orderInCategory="100"
+        android:title="@string/report_gallery"
+        app:showAsAction="never" />
 </menu>

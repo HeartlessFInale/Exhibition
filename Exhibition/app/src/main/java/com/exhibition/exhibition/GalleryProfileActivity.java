@@ -54,6 +54,7 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
     private ArtistDetails artistDetails;
     private ProgressDialog progressDialog;
     private TextView artType;
+    private String reason;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +192,31 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
             intent.putExtra("gallery_id", gallery.id);
             startActivity(intent);
         }
+        if (id == R.id.action_report_gallery) {
+            promptReport();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void promptReport() {
+        final EditText editText = new EditText(this);
+        new AlertDialog.Builder(this)
+                .setView(editText)
+                .setTitle("Reason for Reporting")
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        reason = editText.getText().toString();
+                        if (!TextUtils.isEmpty(reason)) {
+                            new ReportGallery().execute();
+                        } else {
+                            Toast.makeText(GalleryProfileActivity.this, "Cannot leave field blank", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     private void submitArtwork() {
@@ -269,4 +294,15 @@ public class GalleryProfileActivity extends AppCompatActivity implements Refresh
         }
     }
 
+    private class ReportGallery extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                ApiHelper.report(ApiHelper.ReportType.GALLERY, gallery.id, reason);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 }

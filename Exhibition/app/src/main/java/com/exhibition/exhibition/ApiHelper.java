@@ -31,7 +31,7 @@ import okhttp3.Response;
  */
 
 public class ApiHelper {
-    public static final String URL = "http://f339ce17.ngrok.io/";
+    public static final String URL = "http://0f6be6c2.ngrok.io/";
     public static final String IMAGES = "images/";
 
     private static String getGalleryList(int id) throws IOException {
@@ -371,8 +371,49 @@ public class ApiHelper {
         JSONArray jsonArray = new JSONArray(s);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            arts.add(new Art(jsonObject.getInt("art_id"), jsonObject.getString("name"), jsonObject.getString("picture")));
+            arts.add(new Art(jsonObject.getInt("art_id"), jsonObject.getString("name"), jsonObject.getString("picture"), jsonObject.getInt("submission_id")));
         }
         return arts;
+    }
+
+    public static void acceptRejectArt(int submissionId, Boolean isAccepted, String reason) throws IOException {
+        Log.d("ApiHelper: acceptRej1", "submissionId: " + submissionId);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"accept_reject_submission?submission_id=" + submissionId + "&is_accepted=" + isAccepted + "&reason=" + reason)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper: acceptRej2", s);
+    }
+
+    public enum ReportType {
+        ART("Artwork", "art_id"),
+        ARTIST("Artist", "artist_id"),
+        GALLERY("Gallery", "gallery_id");
+
+        private final String name;
+        private final String parameter;
+        ReportType(String name, String parameter) {
+            this.name = name;
+            this.parameter = parameter;
+        }
+        public String getName() {
+            return name;
+        }
+        public String getParameter() {
+            return parameter;
+        }
+    }
+
+    public static void report(ReportType type, int id, String reason) throws IOException {
+        Log.d("ApiHelper: report" + type.getName(), "Id: " + id + " Reason: " + reason);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL+"report" + type.getName() +"?" + type.getParameter() +"=" + id + "&reason=" + reason)
+                .build();
+        Response response = client.newCall(request).execute();
+        String s = response.body().string();
+        Log.d("ApiHelper: report" + type.getName(), s);
     }
 }

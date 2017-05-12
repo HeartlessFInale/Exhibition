@@ -1,9 +1,12 @@
 package com.exhibition.exhibition;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +29,7 @@ public class ArtDetailActivity extends AppCompatActivity {
     Button button;
     Art art;
     String traitsHeader = "Traits:\n";
+    private String reason;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +87,42 @@ public class ArtDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_art, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             finish();
         }
+        if (id == R.id.action_report_art) {
+            promptReport();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void promptReport() {
+        final EditText editText = new EditText(this);
+        new AlertDialog.Builder(this)
+                .setView(editText)
+                .setTitle("Reason for Reporting")
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        reason = editText.getText().toString();
+                        if (!TextUtils.isEmpty(reason)) {
+                            new ReportArt().execute();
+                        } else {
+                            Toast.makeText(ArtDetailActivity.this, "Cannot leave field blank", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     private class UpdateArt extends AsyncTask<Void, Void, Void> {
@@ -118,4 +152,17 @@ public class ArtDetailActivity extends AppCompatActivity {
             traits.setText(traitsHeader + art.traits);
         }
     }
+
+    private class ReportArt extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                ApiHelper.report(ApiHelper.ReportType.ART, art.id, reason);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 }

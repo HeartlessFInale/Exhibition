@@ -32,9 +32,16 @@ public class GallerySubmissionActivity extends AppCompatActivity {
             finish();
         }
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        adapter = new ArtAdapter(this, arts, ArtAdapter.ACTION_VIEW);
+        adapter = new ArtAdapter(this, arts, ArtAdapter.ACTION_ACCEPT_REJECT);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        arts.clear();
+        adapter.notifyDataSetChanged();
         new GetSubmissions().execute();
     }
 
