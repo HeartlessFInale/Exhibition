@@ -38,7 +38,6 @@ def addFavGallery(artist_id,gallery_id):
         return e.message
 
 
-
 def deleteFavGallery(artist_id,gallery_id):
     try:
         conn = CreateConnection()
@@ -307,7 +306,6 @@ def deleteArtTrait(art_id, trait_id):
         return e.message
 
 
-
 def addArtistTrait(artist_id, trait):
     try:
         conn = CreateConnection()
@@ -365,7 +363,6 @@ def deleteArtistTrait(artist_id, trait_id):
         return e.message
 
 
-
 def addGalleryTrait(gallery_id, trait):
     try:
         conn = CreateConnection()
@@ -383,7 +380,6 @@ def addGalleryTrait(gallery_id, trait):
     except Exception as e:
         print e
         return e.message
-
 
 
 def updateGalleryTrait(gallery_id, trait_id, new_trait):
@@ -405,7 +401,6 @@ def updateGalleryTrait(gallery_id, trait_id, new_trait):
         return e.message
 
 
-
 def deleteGalleryTrait(gallery_id, trait_id):
     try:
         conn = CreateConnection()
@@ -423,7 +418,6 @@ def deleteGalleryTrait(gallery_id, trait_id):
     except Exception as e:
         print e
         return e.message
-
 
 
 def search(search_term,artist_id):
@@ -454,7 +448,6 @@ def search(search_term,artist_id):
     except Exception as e:
         print e
         return e.message
-
 
 
 def searchTrait(search_term):
@@ -488,7 +481,6 @@ def searchTrait(search_term):
         return e.message
 
 
-
 def getSubmissions(gallery_id):
     try:
 
@@ -510,7 +502,7 @@ def getSubmissions(gallery_id):
         return e.message
 
 
-def getSubmissions(submission_id, is_accepted, reason):
+def accept_reject(submission_id, is_accepted, reason):
     try:
 
         conn = CreateConnection()
@@ -528,4 +520,4 @@ def getSubmissions(submission_id, is_accepted, reason):
         return result
     except Exception as e:
         print e
-        return e.messageaccept_reject
+        return e.message
