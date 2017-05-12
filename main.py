@@ -594,7 +594,7 @@ def send_report_email(report_id, report_reason):
         msg.preamble = 'This is a multi-part message in MIME format.'
 
         username = 'tejasshah.nmims@gmail.com'
-        password = '1792tejas'
+        password = ''
         s = smtplib.SMTP('smtp.gmail.com:587')
         s.starttls()
         s.login(username,password)
