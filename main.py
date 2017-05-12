@@ -6,6 +6,11 @@ import SQLConnection
 import json
 import time
 
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'UPLOADS'
 # Temp secret key, make random, basically session key
@@ -448,7 +453,7 @@ def accept_reject():
     try:
         submission_id = request.args['submission_id']
 
-        is_accepted = request.args['is_accepted']
+        is_accepted = bool(request.args['is_accepted'])
 
         reason = request.args['reason']
 
@@ -459,5 +464,148 @@ def accept_reject():
     except Exception as e:
         error = 'Internal Server Error: {}'.format(e.message)
         return jsonify(error)
+
+@app.route('/reportArtwork')
+def reportArtwork():
+    try:
+        art_id = request.args['art_id']
+        reason = request.args['reason']
+
+        report_id = 'Artwork Id : %s' %(art_id)
+
+        return_code, status = send_report_email(report_id, reason)
+
+        return jsonify(return_code=return_code,status=status)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route('/reportArtist')
+def reportArtist():
+    try:
+        artist_id = request.args['artist_id']
+        reason = request.args['reason']
+
+        report_id = 'Artist Id : %s' %(artist_id)
+
+        return_code, status = send_report_email(report_id, reason)
+
+        return jsonify(return_code=return_code,status=status)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+@app.route('/reportGallery')
+def reportGallery():
+    try:
+        gallery_id = request.args['gallery_id']
+        reason = request.args['reason']
+
+        report_id = 'Gallery Id : %s' %(gallery_id)
+
+        return_code, status = send_report_email(report_id, reason)
+
+        return jsonify(return_code=return_code,status=status)
+
+    except Exception as e:
+        error = 'Internal Server Error: {}'.format(e.message)
+        return jsonify(error)
+
+
+def send_report_email(report_id, report_reason):
+    try:
+        me = 'ts2911@nyu.edu'
+        you = 'tejasshah@nyu.edu'
+
+        email_content = """
+        <html>
+        <head>
+        <style>
+        .body{
+            margin: 0 auto;
+            background-color:#000;
+            color:#fff;
+        }
+        .title{
+            font-family:helvetica;
+            font-size:1.5em;
+            padding:5px;
+            margin-left:15px;
+        }
+        .thumbnail{
+            width:50px;
+            height: 50px;
+        }
+        .content{
+            margin-left:15px;
+            font-size: 1.1em;
+        }
+        footer{
+            margin:50px 15px;
+            font-size:1.3em;
+        }
+        </style>
+        </head>
+        <body class="body">
+        <div style="background-color:#3F51B5">
+            <p class="title">Exhibitions</p>
+        </div>
+        <div class="content">
+            <p>Report Filed For - %s</p>
+            <p>Reason - <br> %s</p>
+        </div>
+        <footer>
+            <img class="thumbnail" src="cid:image1" />
+            <p>Thank you,<br>Team Exhibitors</p>
+        </footer>
+        </body>
+        </html>
+        """ % (report_id, report_reason)
+
+
+        msg = MIMEMultipart('related')
+
+        msg_alternative = MIMEMultipart('alternative')
+        msg.attach(msg_alternative)
+
+
+        msgText = MIMEText('Report Filed for %s.\n Reason: %s'.format(report_id,report_reason))
+        msg_alternative.attach(msgText)
+
+        msgText = MIMEText(email_content,'html')
+        msg_alternative.attach(msgText)
+
+        img_data = open('static/images/ExhibitionIcon.png', 'rb').read()
+
+        image = MIMEImage(img_data)
+        image.add_header('Content-ID','<image1>')
+
+        msg.attach(image)
+
+        # Send the message via our own SMTP server, but don't include the
+        # envelope header.
+        msg['Subject'] = 'Report for %s' % report_id
+        msg['From'] = me
+        msg['To'] = you
+        msg.preamble = 'This is a multi-part message in MIME format.'
+
+        username = 'tejasshah.nmims@gmail.com'
+        password = '1792tejas'
+        s = smtplib.SMTP('smtp.gmail.com:587')
+        s.starttls()
+        s.login(username,password)
+        s.sendmail(me, [you], msg.as_string())
+        s.quit()
+
+        return 1, 'Email Sent Successfully'
+
+    except Exception as e:
+        error = 'Error Sending Email: {}'.format(e.message)
+        return -1, error
+
 if __name__ == "__main__":
     app.run('127.0.0.1', 5000)
