@@ -45,6 +45,7 @@ public class ArtistProfileActivity extends AppCompatActivity implements Refresha
     private List<Art> arts = new ArrayList<>();
     private ProgressDialog progressDialog;
     TextView traits;
+    private String reason;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +154,31 @@ public class ArtistProfileActivity extends AppCompatActivity implements Refresha
                 .create()
                     .show();
         }
+        if (id == R.id.action_report_artist) {
+            promptReport();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void promptReport() {
+        final EditText editText = new EditText(this);
+        new AlertDialog.Builder(this)
+                .setView(editText)
+                .setTitle("Reason for Reporting")
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        reason = editText.getText().toString();
+                        if (!TextUtils.isEmpty(reason)) {
+                            new ReportArtist().execute();
+                        } else {
+                            Toast.makeText(ArtistProfileActivity.this, "Cannot leave field blank", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     private class AddTrait extends AsyncTask<String, Void, Void> {
@@ -171,6 +196,19 @@ public class ArtistProfileActivity extends AppCompatActivity implements Refresha
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private class ReportArtist extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                ApiHelper.report(ApiHelper.ReportType.ARTIST, artist.id, reason);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;

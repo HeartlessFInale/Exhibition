@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Created by yatinkaushal on 4/9/17.
  */
 public class Art implements Parcelable {
+    public int submissionId;
     public int id;
     public int artist_id;
     public String description;
@@ -32,6 +33,7 @@ public class Art implements Parcelable {
         name = in.readString();
         picture = in.readString();
         traits = in.readString();
+        submissionId = in.readInt();
     }
 
     public static final Creator<Art> CREATOR = new Creator<Art>() {
@@ -53,6 +55,13 @@ public class Art implements Parcelable {
         this.picture = picture;
     }
 
+    public Art(int art_id, String name, String picture, int submissionId) {
+        this.id = art_id;
+        this.name = name;
+        this.picture = picture;
+        this.submissionId = submissionId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -66,5 +75,6 @@ public class Art implements Parcelable {
         dest.writeString(name);
         dest.writeString(picture);
         dest.writeString(traits);
+        dest.writeInt(submissionId);
     }
 }

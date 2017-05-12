@@ -2,6 +2,7 @@ package com.exhibition.exhibition.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -66,6 +67,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             galleryName = (TextView) itemView.findViewById(R.id.galleryName);
             imageView = (ImageView) itemView.findViewById(R.id.image);
             fav = (ToggleButton) itemView.findViewById(R.id.toggleButton);
+            fav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int add = fav.isChecked() ? 1 : 0;
+                    new AddRemoveFavGallery().execute(add, galleries.get(getAdapterPosition()).id, 1);
+                }
+            });
             description = (TextView) itemView.findViewById(R.id.textView7);
             (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,4 +85,22 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             });
         }
     }
+
+    public class AddRemoveFavGallery extends AsyncTask<Integer, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            try {
+                if (params[0] == 1) {
+                    ApiHelper.addFavGallery(params[1], params[2]);
+                } else {
+                    ApiHelper.deleteFavGallery(params[1], params[2]);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 }

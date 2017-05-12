@@ -13,4 +13,22 @@
         android:orderInCategory="100"
         android:title="@string/add_trait"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_view_submissions"
+        android:orderInCategory="100"
+        android:title="@string/view_submissions"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_contact"
+        android:orderInCategory="100"
+        android:title="Contact this Gallery"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_report_gallery"
+        android:orderInCategory="100"
+        android:title="@string/report_gallery"
+        app:showAsAction="never" />
 </menu>

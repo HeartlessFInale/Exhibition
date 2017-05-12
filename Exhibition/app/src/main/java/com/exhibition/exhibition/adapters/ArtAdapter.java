@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.exhibition.exhibition.AcceptRejectArtworkActivity;
 import com.exhibition.exhibition.ApiHelper;
 import com.exhibition.exhibition.ArtDetailActivity;
 import com.exhibition.exhibition.R;
@@ -42,6 +43,7 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
     public final static int ACTION_VIEW = 1;
     public final static int ACTION_DELETE = 2;
     public final static int ACTION_SUBMIT = 3;
+    public final static int ACTION_ACCEPT_REJECT = 4;
     private AlertDialog alertDialog;
 
     public ArtAdapter(Context context, List<Art> artists, int action) {
@@ -90,15 +92,27 @@ public class ArtAdapter extends RecyclerView.Adapter<ArtAdapter.ViewHolder> {
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
             textView = (TextView) itemView.findViewById(R.id.textView);
             if (action != ACTION_SUBMIT) {
-                (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                if (action == ACTION_ACCEPT_REJECT) {
+                    (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 //                        Toast.makeText(context, "Art Page coming soon!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(context, ArtDetailActivity.class);
-                        intent.putExtra("art", artists.get(getAdapterPosition()));
-                        context.startActivity(intent);
-                    }
-                });
+                            Intent intent = new Intent(context, AcceptRejectArtworkActivity.class);
+                            intent.putExtra("art", artists.get(getAdapterPosition()));
+                            context.startActivity(intent);
+                        }
+                    });
+                } else {
+                    (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+//                        Toast.makeText(context, "Art Page coming soon!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(context, ArtDetailActivity.class);
+                            intent.putExtra("art", artists.get(getAdapterPosition()));
+                            context.startActivity(intent);
+                        }
+                    });
+                }
             } else {
                 (itemView.findViewById(R.id.cardView)).setOnClickListener(new View.OnClickListener() {
                     @Override
